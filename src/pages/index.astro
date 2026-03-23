@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Home | UXplore">
+	<header class="page-header">
+		<p class="section-label">Welcome</p>
+		<h1>UXplore</h1>
+		<p class="lead">
+			A virtual classroom where you guide your learning with our resources—synchronous or asynchronous.
+		</p>
+	</header>
+
+	<div class="layout-split">
+		<div class="split-stack">
+			<div class="card">
+				<div class="prose">
+					<p>
+						Welcome to <strong>UXplore</strong>, a virtual classroom where you can guide your learning using our
+						resources whether it be synchronous or asynchronous. Our mission is to make your education journey
+						effortless and engaging. We offer online classes, video tutorials, and hands-on opportunities to learn
+						and test your knowledge.
+					</p>
+					<p>
+						If you are a first-year student looking to enrich your UX abilities—good news: you’re in the right place!
+					</p>
+				</div>
+			</div>
+		</div>
+		<aside class="split-stack">
+			<div class="card">
+				<h2 class="card-title-tight">Where to go next</h2>
+				<nav class="home-nav" aria-label="Main sections">
+					<a class="home-nav__btn home-nav__btn--teal" href="/asynchronous">
+						<span class="home-nav__title">Asynchronous</span>
+						<span class="home-nav__desc">Video modules &amp; quizzes</span>
+					</a>
+					<a class="home-nav__btn home-nav__btn--violet" href="/synchronous">
+						<span class="home-nav__title">Synchronous</span>
+						<span class="home-nav__desc">Live sessions &amp; office hours</span>
+					</a>
+					<a class="home-nav__btn home-nav__btn--amber" href="/case-study">
+						<span class="home-nav__title">Case study</span>
+						<span class="home-nav__desc">Smart Campus challenge</span>
+					</a>
+					<a class="home-nav__btn home-nav__btn--sky" href="/discussion">
+						<span class="home-nav__title">Discussion board</span>
+						<span class="home-nav__desc">Ask classmates</span>
+					</a>
+				</nav>
+			</div>
+		</aside>
+	</div>
+</Layout>

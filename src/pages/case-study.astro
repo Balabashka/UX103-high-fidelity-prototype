@@ -1,0 +1,131 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Case Study | UXplore">
+	<header class="page-header">
+		<p class="section-label">Competition</p>
+		<h1>Smart Campus UX Challenge</h1>
+		<p class="lead">
+			Everything you need is on this page: introduction, challenge, tech areas, step-by-step instructions, then
+			registration at the end.
+		</p>
+		<div class="hero-actions">
+			<a class="btn btn--secondary" href="#instructions">Review instructions</a>
+			<a class="btn" href="#signup">Register your team</a>
+		</div>
+	</header>
+
+	<section class="card anchor-target" id="intro" aria-labelledby="intro-heading">
+		<h2 id="intro-heading">Introduction</h2>
+		<p class="prose">
+			Welcome to the Smart Campus UX Challenge! Your team’s mission is to design an innovative solution that improves
+			the student experience using emerging technologies like AI, AR/VR, gesture-based interfaces, multimodal
+			interactions, voice interfaces, and IoT.
+		</p>
+		<p class="prose">
+			This is a group-based competition where creativity, user-centered thinking, and practical application of technology
+			will earn points. You’ll design a solution that improves day-to-day student life using one or more of the
+			technology areas outlined below.
+		</p>
+	</section>
+
+	<section class="card anchor-target" id="challenge">
+		<h2>The challenge</h2>
+		<p class="prose">
+			Your university wants to create a “Smart Campus” app that makes student life smoother, safer, and more enjoyable.
+		</p>
+		<p><strong>Current issues to draw from:</strong></p>
+		<ul class="challenge-list">
+			<li>Difficulty finding available study spaces or quiet zones.</li>
+			<li>Overwhelming campus notifications and schedules.</li>
+			<li>Navigational challenges for new students.</li>
+			<li>Accessibility barriers for students with disabilities.</li>
+		</ul>
+		<p class="prose">
+			Your team must design a solution that addresses one or more of these problems using emerging technologies.
+		</p>
+	</section>
+
+	<section class="card">
+		<h2>Technologies to consider</h2>
+		<ul class="tech-tags" aria-label="Technology areas">
+			<li>AI</li>
+			<li>AR/VR</li>
+			<li>Gesture / zero UI</li>
+			<li>Multimodal</li>
+			<li>Voice UI</li>
+			<li>IoT</li>
+		</ul>
+		<ul class="prose challenge-list tech-notes">
+			<li><strong>AI:</strong> Predict student needs, adapt to stress or behavior, detect unusual activity.</li>
+			<li><strong>AR/VR:</strong> Visualize campus buildings, simulate labs, or provide immersive learning experiences.</li>
+			<li><strong>Gesture / zero UI:</strong> Hands-free interaction, gestures, or facial recognition.</li>
+			<li><strong>Multimodal:</strong> Combine touch, voice, and gestures for flexible interaction.</li>
+			<li><strong>Voice UI:</strong> Hands-free control, accessibility support.</li>
+			<li><strong>IoT:</strong> Connect smart campus devices (lighting, lockers, climate) for seamless experiences.</li>
+		</ul>
+	</section>
+
+	<section class="card anchor-target" id="instructions">
+		<h2>Instructions</h2>
+		<ol class="steps">
+			<li>
+				<strong>Step 1: Team formation</strong> — Teams of 3–5 students.
+			</li>
+			<li>
+				<strong>Step 2: Problem identification</strong> — Choose a specific campus challenge to focus on (e.g. study space
+				booking, navigation, accessibility).
+			</li>
+			<li>
+				<strong>Step 3: Ideation &amp; solution design</strong> — Brainstorm how your solution uses one or more emerging
+				technologies. Map the user journey: what the user does, sees, and feels. Consider user emotions and how your app
+				responds (e.g. stress, frustration, excitement).
+			</li>
+			<li>
+				<strong>Step 4: Prototype or mockup</strong> — Sketch screens, storyboard interactions, or describe the interface
+				flow. Highlight how technology is applied and improves the user experience.
+			</li>
+			<li>
+				<strong>Step 5: Presentation (3–5 minutes per team)</strong> — Explain the problem, your solution, and why it
+				works. Show a prototype, sketches, or visual storyboard. Bonus points for creativity, clarity, and technical
+				feasibility.
+			</li>
+		</ol>
+	</section>
+
+	<section class="card anchor-target" id="signup" aria-labelledby="signup-heading">
+		<h2 id="signup-heading">Team signup</h2>
+		<p class="helper">Prototype form—no data is sent anywhere yet.</p>
+		<form class="form-grid">
+			<div class="form-row">
+				<label for="name">Name (first and last)</label>
+				<input id="name" name="name" type="text" autocomplete="name" required />
+			</div>
+			<div class="form-row">
+				<label for="email">Email</label>
+				<input id="email" name="email" type="email" autocomplete="email" required />
+			</div>
+			<div class="form-row">
+				<label for="phone">Phone number</label>
+				<input id="phone" name="phone" type="tel" autocomplete="tel" />
+				<p class="helper">Optional for early prototypes; confirm privacy rules with your course.</p>
+			</div>
+			<fieldset class="fieldset-plain">
+				<legend>Grouping</legend>
+				<label class="check-row">
+					<input type="checkbox" name="groupmate" value="yes" />
+					I have a groupmate request (name them in follow-up email or class channel).
+				</label>
+				<label class="check-row">
+					<input type="checkbox" name="random" value="yes" />
+					Please place me in a randomly generated group.
+				</label>
+				<p class="helper">If both are checked, your instructor can define what happens next.</p>
+			</fieldset>
+			<div class="form-actions">
+				<button type="button" class="btn">Submit interest</button>
+			</div>
+		</form>
+	</section>
+</Layout>

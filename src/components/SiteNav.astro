@@ -1,0 +1,97 @@
+---
+const pathname = Astro.url.pathname;
+const links = [
+	{ href: '/', label: 'Home' },
+	{ href: '/asynchronous', label: 'Asynchronous' },
+	{ href: '/synchronous', label: 'Synchronous' },
+	{ href: '/case-study', label: 'Case Study' },
+	{ href: '/discussion', label: 'Discussion board' },
+] as const;
+
+function isActive(href: string) {
+	return href === '/' ? pathname === '/' : pathname === href;
+}
+---
+
+<nav class="site-nav" aria-label="Main">
+	<div class="nav-start">
+		<a class="brand" href="/">UXplore</a>
+		<p class="tagline">Virtual classroom</p>
+	</div>
+	<ul>
+		{
+			links.map(({ href, label }) => (
+				<li>
+					<a href={href} aria-current={isActive(href) ? 'page' : undefined}>
+						{label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>
+
+<style>
+	.site-nav {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem 1.5rem;
+		padding: 0.85rem 1.25rem;
+		background: rgba(255, 255, 255, 0.92);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-bottom: 1px solid var(--border, #e7e5e4);
+		box-shadow: 0 4px 20px rgba(28, 25, 23, 0.06);
+		font-size: 0.92rem;
+	}
+	.nav-start {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		line-height: 1.2;
+		min-width: 0;
+	}
+	.brand {
+		font-weight: 750;
+		font-size: 1.1rem;
+		letter-spacing: -0.03em;
+		text-decoration: none;
+		color: var(--text, #1c1917);
+	}
+	.tagline {
+		margin: 0;
+		font-size: 0.75rem;
+		color: var(--muted, #57534e);
+	}
+	.site-nav ul {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.35rem 0.25rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		flex: 1;
+	}
+	.site-nav li a {
+		display: inline-block;
+		padding: 0.4rem 0.65rem;
+		border-radius: 8px;
+		color: var(--text, #1c1917);
+		text-decoration: none;
+	}
+	.site-nav li a:hover {
+		background: #f5f3ef;
+	}
+	.site-nav a[aria-current='page'] {
+		font-weight: 650;
+		background: #ccfbf1;
+		color: #115e59;
+	}
+</style>

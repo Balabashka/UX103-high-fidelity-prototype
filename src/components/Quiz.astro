@@ -1,0 +1,435 @@
+---
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Question {
+  type: 'multiple-choice' | 'true-false' | 'fill-blank';
+  text: string;
+  // multiple-choice and true-false
+  options?: Option[];
+  correct?: string;
+  // fill-blank: accepted answers (lowercase, trimmed comparison)
+  answers?: string[];
+  // optional hint shown after wrong answer
+  hint?: string;
+}
+
+interface Props {
+  id: string;
+  questions: Question[];
+}
+
+const { id, questions } = Astro.props;
+---
+
+<div class="quiz-app" id={`quiz-${id}`} data-quiz-id={id}>
+  <div class="quiz-progress">
+    <div class="quiz-progress__bar"></div>
+  </div>
+  <p class="quiz-progress__label"></p>
+
+  <div class="quiz-slides">
+    {questions.map((q, qi) => (
+      <div class="quiz-slide" data-index={qi} data-type={q.type} hidden={qi !== 0}>
+        <p class="quiz-q-text">
+          <span class="quiz-q-num">{qi + 1}</span>
+          {q.text}
+        </p>
+
+        {/* Multiple choice */}
+        {q.type === 'multiple-choice' && (
+          <div class="quiz-options" role="radiogroup">
+            {q.options?.map(opt => (
+              <label class="quiz-option">
+                <input type="radio" name={`${id}-q${qi}`} value={opt.value} />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+        )}
+
+        {/* True / False */}
+        {q.type === 'true-false' && (
+          <div class="quiz-options quiz-options--tf" role="radiogroup">
+            <label class="quiz-option quiz-option--tf">
+              <input type="radio" name={`${id}-q${qi}`} value="true" />
+              True
+            </label>
+            <label class="quiz-option quiz-option--tf">
+              <input type="radio" name={`${id}-q${qi}`} value="false" />
+              False
+            </label>
+          </div>
+        )}
+
+        {/* Fill in the blank */}
+        {q.type === 'fill-blank' && (
+          <div class="quiz-fill">
+            <input
+              class="quiz-fill__input"
+              type="text"
+              name={`${id}-q${qi}`}
+              placeholder="Type your answer…"
+              autocomplete="off"
+              spellcheck={false}
+            />
+          </div>
+        )}
+
+        {q.hint && <p class="quiz-hint" hidden>{q.hint}</p>}
+        <div class="quiz-feedback" hidden></div>
+        <button
+          class="btn quiz-submit"
+          data-correct={q.correct}
+          data-answers={q.answers?.join('|')}
+          data-type={q.type}
+        >
+          Check answer
+        </button>
+      </div>
+    ))}
+  </div>
+
+  <div class="quiz-results" hidden>
+    <div class="quiz-results__score"></div>
+    <p class="quiz-results__msg"></p>
+    <div class="quiz-results__breakdown"></div>
+    <button class="btn quiz-retry">Try again</button>
+  </div>
+</div>
+
+<script>
+interface Answer {
+  q: number;
+  correct: boolean;
+  chosen: string;
+  answer: string;
+}
+
+document.querySelectorAll<HTMLElement>('.quiz-app').forEach(app => {
+  const total      = app.querySelectorAll('.quiz-slide').length;
+  const progBar    = app.querySelector<HTMLElement>('.quiz-progress__bar')!;
+  const progLabel  = app.querySelector<HTMLElement>('.quiz-progress__label')!;
+  const slidesWrap = app.querySelector<HTMLElement>('.quiz-slides')!;
+  const results    = app.querySelector<HTMLElement>('.quiz-results')!;
+  const scoreDisp  = app.querySelector<HTMLElement>('.quiz-results__score')!;
+  const scoreMsg   = app.querySelector<HTMLElement>('.quiz-results__msg')!;
+  const breakdown  = app.querySelector<HTMLElement>('.quiz-results__breakdown')!;
+  const retryBtn   = app.querySelector<HTMLButtonElement>('.quiz-retry')!;
+  const quizId     = app.dataset['quizId'] ?? '';
+
+  let current = 0;
+  let score   = 0;
+  const answers: Answer[] = [];
+
+  function updateProgress(idx: number): void {
+    progBar.style.width = `${((idx + 1) / total) * 100}%`;
+    progLabel.textContent = `Question ${idx + 1} of ${total}`;
+  }
+
+  function showSlide(idx: number): void {
+    app.querySelectorAll<HTMLElement>('.quiz-slide').forEach((s, i) => { s.hidden = i !== idx; });
+    updateProgress(idx);
+  }
+
+  function lockSlide(slide: HTMLElement): void {
+    slide.querySelectorAll<HTMLElement>('.quiz-option').forEach(l => l.classList.add('is-disabled'));
+    const fill = slide.querySelector<HTMLInputElement>('.quiz-fill__input');
+    if (fill) fill.disabled = true;
+  }
+
+  function getRadioLabel(slide: HTMLElement, value: string): string {
+    const input = slide.querySelector<HTMLInputElement>(`input[value="${value}"]`);
+    return input?.closest('label')?.textContent?.trim() ?? value;
+  }
+
+  function checkFillAnswer(userInput: string, acceptedRaw: string): boolean {
+    const accepted = acceptedRaw.split('|').map(s => s.trim().toLowerCase());
+    return accepted.includes(userInput.trim().toLowerCase());
+  }
+
+  function bindSubmit(slide: HTMLElement, idx: number): void {
+    const oldBtn = slide.querySelector<HTMLButtonElement>('button')!;
+    const btn    = oldBtn.cloneNode(true) as HTMLButtonElement;
+    oldBtn.replaceWith(btn);
+
+    const qType    = btn.dataset['type'] ?? '';
+    const correct  = btn.dataset['correct'] ?? '';
+    const accepted = btn.dataset['answers'] ?? '';
+    const feedback = slide.querySelector<HTMLElement>('.quiz-feedback')!;
+    const hint     = slide.querySelector<HTMLElement>('.quiz-hint');
+    const name     = `${quizId}-q${idx}`;
+
+    btn.addEventListener('click', function() {
+      let isCorrect = false;
+      let chosenLabel = '';
+      let correctLabel = '';
+
+      if (qType === 'fill-blank') {
+        const fill = slide.querySelector<HTMLInputElement>('.quiz-fill__input');
+        if (!fill || fill.value.trim() === '') return;
+        isCorrect    = checkFillAnswer(fill.value, accepted);
+        chosenLabel  = fill.value.trim();
+        correctLabel = accepted.split('|')[0] ?? '';
+
+        fill.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+
+      } else {
+        // multiple-choice or true-false
+        const chosen = slide.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
+        if (!chosen) return;
+        isCorrect    = chosen.value === correct;
+        chosenLabel  = getRadioLabel(slide, chosen.value);
+        correctLabel = getRadioLabel(slide, correct);
+
+        chosen.closest('label')?.classList.add(isCorrect ? 'is-correct' : 'is-wrong');
+        if (!isCorrect) {
+          slide.querySelector<HTMLInputElement>(`input[value="${correct}"]`)
+            ?.closest('label')?.classList.add('is-reveal');
+        }
+      }
+
+      if (isCorrect) score++;
+      lockSlide(slide);
+
+      // Show hint if wrong and hint exists
+      if (!isCorrect && hint) hint.hidden = false;
+
+      feedback.hidden    = false;
+      feedback.className = `quiz-feedback ${isCorrect ? 'feedback--correct' : 'feedback--wrong'}`;
+      feedback.textContent = isCorrect
+        ? '✓ Correct!'
+        : qType === 'fill-blank'
+          ? `✗ Not quite — the answer is "${correctLabel}".`
+          : '✗ Not quite — the right answer is highlighted above.';
+
+      answers.push({ q: idx + 1, correct: isCorrect, chosen: chosenLabel, answer: correctLabel });
+
+      btn.textContent = idx < total - 1 ? 'Next question →' : 'See results';
+      btn.classList.replace('quiz-submit', 'quiz-next');
+
+      btn.addEventListener('click', function() {
+        if (idx < total - 1) {
+          current++;
+          showSlide(current);
+          bindSubmit(app.querySelectorAll<HTMLElement>('.quiz-slide')[current], current);
+        } else {
+          showResults();
+        }
+      }, { once: true });
+
+    }, { once: true });
+  }
+
+  function showResults(): void {
+    slidesWrap.hidden = true;
+    app.querySelector<HTMLElement>('.quiz-progress')!.hidden = true;
+    progLabel.hidden = true;
+    results.hidden   = false;
+
+    const pct = Math.round((score / total) * 100);
+    scoreDisp.textContent = `${score} / ${total}`;
+    scoreMsg.textContent  = pct >= 80
+      ? '🎉 Great work! Solid understanding.'
+      : pct >= 50
+      ? '👍 Good effort — review what you missed and try again.'
+      : '📖 Keep studying — revisit the video and give it another shot.';
+
+    breakdown.innerHTML = answers.map(a => `
+      <div class="breakdown-row ${a.correct ? 'b-correct' : 'b-wrong'}">
+        <span class="bicon">${a.correct ? '✓' : '✗'}</span>
+        <span><strong>Q${a.q}:</strong> ${a.correct
+          ? a.chosen
+          : `You answered "${a.chosen}" — correct: "${a.answer}"`}
+        </span>
+      </div>
+    `).join('');
+  }
+
+  function init(): void {
+    current = 0;
+    score   = 0;
+    answers.length = 0;
+
+    app.querySelectorAll<HTMLElement>('.quiz-slide').forEach((slide, idx) => {
+      slide.hidden = idx !== 0;
+      slide.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(r => { r.checked = false; });
+      slide.querySelectorAll<HTMLElement>('.quiz-option').forEach(l => {
+        l.classList.remove('is-correct', 'is-wrong', 'is-reveal', 'is-disabled');
+      });
+      const fill = slide.querySelector<HTMLInputElement>('.quiz-fill__input');
+      if (fill) { fill.value = ''; fill.disabled = false; fill.classList.remove('is-correct', 'is-wrong'); }
+      const hint = slide.querySelector<HTMLElement>('.quiz-hint');
+      if (hint) hint.hidden = true;
+      const fb = slide.querySelector<HTMLElement>('.quiz-feedback')!;
+      fb.hidden = true; fb.textContent = ''; fb.className = 'quiz-feedback';
+      const btn = slide.querySelector<HTMLButtonElement>('button')!;
+      btn.textContent = 'Check answer';
+      btn.className   = 'btn quiz-submit';
+    });
+
+    app.querySelector<HTMLElement>('.quiz-progress')!.hidden = false;
+    progLabel.hidden  = false;
+    slidesWrap.hidden = false;
+    results.hidden    = true;
+    updateProgress(0);
+    bindSubmit(app.querySelectorAll<HTMLElement>('.quiz-slide')[0], 0);
+  }
+
+  retryBtn.addEventListener('click', init);
+  init();
+});
+</script>
+
+<style>
+.quiz-app {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(231,229,228,0.85);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.quiz-progress {
+  height: 5px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+.quiz-progress__bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.35s ease;
+}
+.quiz-progress__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1.25rem;
+}
+.quiz-q-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+.quiz-q-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 6px;
+  vertical-align: middle;
+}
+
+/* ── Multiple choice ─────────────────────────────────────────────────────── */
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: border-color 0.15s, background 0.15s;
+  background: rgba(250,250,249,0.8);
+}
+.quiz-option:hover { border-color: #a8a29e; background: #fff; }
+.quiz-option input[type="radio"] { margin-top: 0.15rem; accent-color: var(--accent); flex-shrink: 0; }
+.quiz-option.is-correct  { border-color: #10b981; background: #ecfdf5; color: #065f46; font-weight: 600; }
+.quiz-option.is-wrong    { border-color: #f43f5e; background: #fff1f2; color: #9f1239; }
+.quiz-option.is-reveal   { border-color: #10b981; background: #ecfdf5; color: #065f46; font-weight: 600; }
+.quiz-option.is-disabled { pointer-events: none; opacity: 0.65; }
+
+/* ── True / False ────────────────────────────────────────────────────────── */
+.quiz-options--tf {
+  flex-direction: row;
+  gap: 0.75rem;
+}
+.quiz-option--tf {
+  flex: 1;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+/* ── Fill in the blank ───────────────────────────────────────────────────── */
+.quiz-fill {
+  margin-bottom: 1rem;
+}
+.quiz-fill__input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  font: inherit;
+  font-size: 0.95rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(250,250,249,0.8);
+  transition: border-color 0.15s, background 0.15s;
+  outline: none;
+}
+.quiz-fill__input:focus        { border-color: #5eead4; background: #fff; }
+.quiz-fill__input.is-correct   { border-color: #10b981; background: #ecfdf5; color: #065f46; }
+.quiz-fill__input.is-wrong     { border-color: #f43f5e; background: #fff1f2; color: #9f1239; }
+.quiz-fill__input:disabled     { opacity: 0.75; }
+
+/* ── Hint ────────────────────────────────────────────────────────────────── */
+.quiz-hint {
+  font-size: 0.85rem;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Feedback ────────────────────────────────────────────────────────────── */
+.quiz-feedback {
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.feedback--correct { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
+.feedback--wrong   { background: #fff1f2; color: #9f1239;  border: 1px solid #fda4af; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.quiz-submit, .quiz-next { width: 100%; }
+.quiz-next       { background: var(--accent); color: #fff; }
+.quiz-next:hover { background: var(--accent-hover); }
+
+/* ── Results ─────────────────────────────────────────────────────────────── */
+.quiz-results            { text-align: center; }
+.quiz-results__score     { font-size: 3rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+.quiz-results__msg       { font-size: 1.05rem; color: var(--muted); margin: 0 0 1.5rem; }
+.quiz-results__breakdown { text-align: left; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.breakdown-row           { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; padding: 0.4rem 0.6rem; border-radius: 6px; background: rgba(250,250,249,0.9); border: 1px solid var(--border); }
+.breakdown-row .bicon    { flex-shrink: 0; }
+.breakdown-row.b-correct { border-color: #6ee7b7; background: #f0fdf9; }
+.breakdown-row.b-wrong   { border-color: #fda4af; background: #fff5f6; }
+.quiz-retry       { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+.quiz-retry:hover { background: var(--accent-soft); }
+</style>

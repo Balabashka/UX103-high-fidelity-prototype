@@ -1,0 +1,193 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Quiz from '../components/Quiz.astro';
+
+const videoId = 'QpbJwad6v_s';
+
+const arvrQuestions = [
+  {
+    type: 'true-false' as const,
+    text: 'IKEA Place is an example of AR because it helps users imagine objects like a couch in real-world environments like an empty room.',
+    correct: 'true',
+    hint: 'Think about what IKEA Place does — does it overlay digital objects onto a live camera view of your room?',
+  },
+  {
+    type: 'true-false' as const,
+    text: 'Augmented reality is the same as virtual reality.',
+    correct: 'false',
+    hint: 'Consider whether AR replaces your environment or simply adds to it.',
+  },
+  {
+    type: 'fill-blank' as const,
+    text: 'Mixed reality is a ________ of both virtual reality and augmented reality.',
+    answers: ['hybrid'],
+    hint: 'It combines elements from both — what word describes something that merges two things?',
+  },
+  {
+    type: 'multiple-choice' as const,
+    text: 'Virtual reality is when the user is ________ immersed in the virtual environment.',
+    options: [
+      { value: 'a', label: 'Partially' },
+      { value: 'b', label: 'Fully' },
+    ],
+    correct: 'b',
+    hint: 'VR headsets block out the real world entirely.',
+  },
+  {
+    type: 'fill-blank' as const,
+    text: 'If a user wanted to try on a shade of makeup before going in store, they are likely using ________ product visualization (EPV).',
+    answers: ['enhanced'],
+    hint: 'The abbreviation EPV stands for _________ Product Visualization.',
+  },
+  {
+    type: 'true-false' as const,
+    text: 'Omnichannel integration can create a smooth experience that "follows" you across devices and touchpoints.',
+    correct: 'true',
+    hint: 'Think about how a shopping cart persists from mobile to desktop.',
+  },
+  {
+    type: 'fill-blank' as const,
+    text: 'Pokémon GO uses augmented reality by implementing ________ features where users can interact with a real-time contextual map.',
+    answers: ['navigation'],
+    hint: 'Users move around in the real world guided by the in-game map — what word describes that?',
+  },
+];
+---
+
+<Layout title="Asynchronous | UXplore">
+  <header class="page-header">
+    <p class="section-label">Learn at your pace</p>
+    <h1>Asynchronous</h1>
+    <p class="lead">
+      Choose a topic, then switch between <strong>Video</strong> and <strong>Quiz</strong>—only one
+      shows at a time. AR/VR has full content in v1; other topics are stubs.
+    </p>
+  </header>
+
+  <input class="sr-only" type="radio" name="async-topic" id="topic-arvr" checked />
+  <input class="sr-only" type="radio" name="async-topic" id="topic-ux" />
+  <input class="sr-only" type="radio" name="async-topic" id="topic-a11y" />
+  <input class="sr-only" type="radio" name="async-view" id="async-view-video" checked />
+  <input class="sr-only" type="radio" name="async-view" id="async-view-quiz" checked />
+
+  <div class="async-layout">
+    <div class="async-toolbar">
+      <div class="topic-search-wrap">
+        <svg class="topic-search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 10.5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          class="topic-search"
+          type="search"
+          placeholder="Search topics…"
+          id="topic-search-input"
+          aria-label="Search topics"
+        />
+      </div>
+
+      <p class="topic-sidebar-label">Topics</p>
+
+      <div class="topic-column" role="group" aria-label="Topics" id="topic-list">
+        <label class="topic-btn topic-btn--compact" for="topic-arvr" data-topic="ar vr augmented virtual reality immersive xr">AR / VR</label>
+        <label class="topic-btn topic-btn--compact" for="topic-ux" data-topic="ux research user experience interviews synthesis">UX research</label>
+        <label class="topic-btn topic-btn--compact" for="topic-a11y" data-topic="accessibility a11y inclusive design screen reader wcag">Accessibility</label>
+      </div>
+
+      <p class="topic-no-results" id="topic-no-results" hidden>No topics match.</p>
+    </div>
+
+    <div class="async-content-area">
+      <div class="async-toolbar__aside">
+        <div class="view-toggle" role="group" aria-label="What to show">
+          <label class="view-btn" for="async-view-video">Video</label>
+          <label class="view-btn" for="async-view-quiz">Quiz</label>
+        </div>
+      </div>
+
+      <div class="async-panels">
+        <div class="async-panel async-panel--arvr-vid">
+          <p class="topic-intro">
+            <strong>AR / VR</strong> — Practice telling immersive experiences apart, spotting real-world
+            examples, and connecting product patterns to user goals.
+          </p>
+          <section class="card video-card" aria-labelledby="video-heading-arvr">
+            <h2 id="video-heading-arvr">Video</h2>
+            <p class="video-caption">AR/VR overview (prototype v1).</p>
+            <div class="video-wrap">
+              <iframe
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="YouTube: AR/VR tutorial"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+            <p class="video-caption">
+              <a href="https://www.youtube.com/watch?v=QpbJwad6v_s" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+            </p>
+          </section>
+        </div>
+
+        <div class="async-panel async-panel--arvr-quiz">
+          <p class="topic-intro">
+            <strong>AR / VR</strong> — Answer each question and get instant feedback. Hints appear if you get one wrong.
+          </p>
+          <Quiz id="arvr" questions={arvrQuestions} />
+        </div>
+
+        <div class="async-panel async-panel--ux-vid">
+          <p class="topic-intro">
+            <strong>UX research</strong> — Plan interviews, synthesize findings, and connect insights to design decisions.
+          </p>
+          <div class="card video-card">
+            <h2>Video</h2>
+            <div class="video-placeholder video-placeholder--violet" role="img" aria-label="Video placeholder">
+              <p class="video-placeholder__label">Video coming soon</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="async-panel async-panel--ux-quiz">
+          <p class="topic-intro"><strong>UX research</strong> — Quiz coming when the module is ready.</p>
+          <div class="card"><h2>Quiz</h2><p class="helper">No questions yet — check back soon.</p></div>
+        </div>
+
+        <div class="async-panel async-panel--a11y-vid">
+          <p class="topic-intro">
+            <strong>Accessibility</strong> — Build empathy for diverse needs and inclusive design patterns.
+          </p>
+          <div class="card video-card">
+            <h2>Video</h2>
+            <div class="video-placeholder video-placeholder--sage" role="img" aria-label="Video placeholder">
+              <p class="video-placeholder__label">Video coming soon</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="async-panel async-panel--a11y-quiz">
+          <p class="topic-intro"><strong>Accessibility</strong> — Scenario-based checks will go here in a future version.</p>
+          <div class="card"><h2>Quiz</h2><p class="helper">No questions yet — check back soon.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const input     = document.getElementById('topic-search-input') as HTMLInputElement | null;
+  const labels    = document.querySelectorAll<HTMLElement>('#topic-list .topic-btn');
+  const noResults = document.getElementById('topic-no-results') as HTMLElement | null;
+
+  input?.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    labels.forEach(label => {
+      const keywords = (label.dataset['topic'] ?? '') + ' ' + label.textContent?.toLowerCase();
+      const match = !q || keywords.includes(q);
+      label.hidden = !match;
+      if (match) visible++;
+    });
+    if (noResults) noResults.hidden = visible > 0;
+  });
+</script>
