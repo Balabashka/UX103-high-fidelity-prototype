@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { title = 'UXplore' } = Astro.props;
+const user = Astro.locals.user ?? null;
 ---
 
 <!doctype html>
@@ -20,7 +21,7 @@ const { title = 'UXplore' } = Astro.props;
 		<title>{title}</title>
 	</head>
 	<body>
-		<SiteNav />
+		<SiteNav user={user} />
 		<main class="page">
 			<slot />
 		</main>

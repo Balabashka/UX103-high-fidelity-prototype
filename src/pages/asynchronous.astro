@@ -59,16 +59,26 @@ const arvrQuestions = [
     <p class="section-label">Learn at your pace</p>
     <h1>Asynchronous</h1>
     <p class="lead">
-      Choose a topic, then switch between <strong>Video</strong> and <strong>Quiz</strong>—only one
-      shows at a time. AR/VR has full content in v1; other topics are stubs.
+      Choose a topic, then move from <strong>Video</strong> to <strong>Quiz</strong> to reinforce your learning.
     </p>
   </header>
 
-  <input class="sr-only" type="radio" name="async-topic" id="topic-arvr" checked />
-  <input class="sr-only" type="radio" name="async-topic" id="topic-ux" />
-  <input class="sr-only" type="radio" name="async-topic" id="topic-a11y" />
-  <input class="sr-only" type="radio" name="async-view" id="async-view-video" checked />
-  <input class="sr-only" type="radio" name="async-view" id="async-view-quiz" checked />
+  <section class="start-here card" aria-labelledby="start-here-heading">
+    <h2 id="start-here-heading">Start Here</h2>
+    <p class="helper">New to UXplore? Follow these steps to get started:</p>
+    <ol class="start-here-list">
+      <li>Select a topic from the sidebar on the left.</li>
+      <li>Watch the lesson video.</li>
+      <li>Switch to the quiz to test your understanding.</li>
+    </ol>
+    <button class="start-here-btn" type="button" id="start-arvr-btn">Start with AR / VR →</button>
+  </section>
+
+  <input class="sr-only async-radio" type="radio" name="async-topic" id="topic-arvr" checked />
+  <input class="sr-only async-radio" type="radio" name="async-topic" id="topic-ux" />
+  <input class="sr-only async-radio" type="radio" name="async-topic" id="topic-a11y" />
+  <input class="sr-only async-radio" type="radio" name="async-view" id="async-view-video" checked />
+  <input class="sr-only async-radio" type="radio" name="async-view" id="async-view-quiz" />
 
   <div class="async-layout">
     <div class="async-toolbar">
@@ -89,15 +99,30 @@ const arvrQuestions = [
       <p class="topic-sidebar-label">Topics</p>
 
       <div class="topic-column" role="group" aria-label="Topics" id="topic-list">
-        <label class="topic-btn topic-btn--compact" for="topic-arvr" data-topic="ar vr augmented virtual reality immersive xr">AR / VR</label>
-        <label class="topic-btn topic-btn--compact" for="topic-ux" data-topic="ux research user experience interviews synthesis">UX research</label>
-        <label class="topic-btn topic-btn--compact" for="topic-a11y" data-topic="accessibility a11y inclusive design screen reader wcag">Accessibility</label>
+        <label class="topic-btn topic-btn--compact" for="topic-arvr" data-topic="ar vr augmented virtual reality immersive xr">
+          AR / VR
+          <span class="topic-done-badge" id="badge-arvr">✓ Done</span>
+        </label>
+        <label class="topic-btn topic-btn--compact topic-btn--locked" for="topic-ux" data-topic="ux research user experience interviews synthesis">
+          UX Research
+          <span class="topic-soon-badge">Coming soon</span>
+        </label>
+        <label class="topic-btn topic-btn--compact topic-btn--locked" for="topic-a11y" data-topic="accessibility a11y inclusive design screen reader wcag">
+          Accessibility
+          <span class="topic-soon-badge">Coming soon</span>
+        </label>
       </div>
 
       <p class="topic-no-results" id="topic-no-results" hidden>No topics match.</p>
     </div>
 
     <div class="async-content-area">
+      <div class="card quiz-scores-summary" id="quiz-scores-summary" aria-live="polite">
+        <h2 class="card-title-tight">Your best scores</h2>
+        <p class="helper" id="quiz-scores-summary-msg"></p>
+        <ul class="quiz-scores-summary__list" id="quiz-scores-summary-list"></ul>
+      </div>
+
       <div class="async-toolbar__aside">
         <div class="view-toggle" role="group" aria-label="What to show">
           <label class="view-btn" for="async-view-video">Video</label>
@@ -112,7 +137,10 @@ const arvrQuestions = [
             examples, and connecting product patterns to user goals.
           </p>
           <section class="card video-card" aria-labelledby="video-heading-arvr">
-            <h2 id="video-heading-arvr">Video</h2>
+            <div class="card-header-row">
+              <h2 id="video-heading-arvr">Video</h2>
+              <span class="step-badge">Step 1 of 2</span>
+            </div>
             <p class="video-caption">AR/VR overview (prototype v1).</p>
             <div class="video-wrap">
               <iframe
@@ -123,9 +151,10 @@ const arvrQuestions = [
                 loading="lazy"
               ></iframe>
             </div>
-            <p class="video-caption">
-              <a href="https://www.youtube.com/watch?v=QpbJwad6v_s" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
-            </p>
+            <div class="video-actions">
+              <a class="video-yt-link" href="https://www.youtube.com/watch?v=QpbJwad6v_s" target="_blank" rel="noopener noreferrer">Open on YouTube</a>
+              <button class="next-step-btn" type="button" id="go-to-quiz-btn">Next: Take Quiz →</button>
+            </div>
           </section>
         </div>
 
@@ -190,4 +219,205 @@ const arvrQuestions = [
     });
     if (noResults) noResults.hidden = visible > 0;
   });
+
+  const QUIZ_LABELS: Record<string, string> = {
+    arvr: 'AR / VR quiz',
+    ux: 'UX research quiz',
+    a11y: 'Accessibility quiz',
+  };
+
+  async function loadQuizScoreSummary(): Promise<void> {
+    const msg = document.getElementById('quiz-scores-summary-msg');
+    const list = document.getElementById('quiz-scores-summary-list');
+    if (!msg || !list) return;
+    try {
+      const res = await fetch('/api/quiz/scores', { credentials: 'include' });
+      const data = (await res.json()) as {
+        scores?: { quizId: string; highCorrect: number; total: number }[];
+        loggedIn?: boolean;
+      };
+      list.innerHTML = '';
+      if (!data.loggedIn) {
+        msg.textContent = 'Log in to save and view your best score on each quiz.';
+        return;
+      }
+      const rows = data.scores ?? [];
+      if (rows.length === 0) {
+        msg.textContent = 'Complete a quiz while logged in to see your highs here.';
+        return;
+      }
+      msg.textContent = 'Highest correct count saved per quiz:';
+      for (const s of rows) {
+        const li = document.createElement('li');
+        const name = QUIZ_LABELS[s.quizId] ?? s.quizId;
+        li.textContent = `${name}: ${s.highCorrect} / ${s.total}`;
+        list.appendChild(li);
+      }
+    } catch {
+      msg.textContent = '';
+    }
+  }
+
+  void loadQuizScoreSummary();
+  window.addEventListener('uxplore-quiz-saved', () => void loadQuizScoreSummary());
+
+  // Start Here → select AR/VR + video view
+  document.getElementById('start-arvr-btn')?.addEventListener('click', () => {
+    (document.getElementById('topic-arvr') as HTMLInputElement).checked = true;
+    (document.getElementById('async-view-video') as HTMLInputElement).checked = true;
+  });
+
+  // Next: Take Quiz → switch to quiz view
+  document.getElementById('go-to-quiz-btn')?.addEventListener('click', () => {
+    (document.getElementById('async-view-quiz') as HTMLInputElement).checked = true;
+  });
+
+  // Show ✓ Done badge when AR/VR quiz is passed (≥80%)
+  async function refreshDoneBadge(): Promise<void> {
+    try {
+      const res = await fetch('/api/quiz/scores', { credentials: 'include' });
+      const data = (await res.json()) as {
+        scores?: { quizId: string; highCorrect: number; total: number }[];
+        loggedIn?: boolean;
+      };
+      if (!data.loggedIn) return;
+      for (const s of data.scores ?? []) {
+        if (s.quizId === 'arvr' && s.highCorrect / s.total >= 0.8) {
+          const badge = document.getElementById('badge-arvr');
+          if (badge) badge.style.display = 'inline-flex';
+        }
+      }
+    } catch { /* silent */ }
+  }
+
+  void refreshDoneBadge();
+  window.addEventListener('uxplore-quiz-saved', () => void refreshDoneBadge());
 </script>
+<style>
+  /* ── Hide radio inputs completely — sr-only alone isn't enough in all browsers */
+  .async-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ── Start Here card ─────────────────────────────────────────────── */
+  .start-here {
+    margin-bottom: 1.75rem;
+  }
+  .start-here h2 { margin-bottom: 0.5rem; }
+  .start-here-list {
+    margin: 0.5rem 0 1.25rem;
+    padding-left: 1.4rem;
+    line-height: 1.9;
+  }
+  .start-here-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: none;
+    border-radius: 999px;
+    padding: 0.65rem 1.25rem;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: #1f2937;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .start-here-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+
+  /* ── Card header row ─────────────────────────────────────────────── */
+  .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-header-row h2 { margin: 0; }
+
+  /* ── Step badge ──────────────────────────────────────────────────── */
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: #e0e7ff;
+    color: #3730a3;
+    white-space: nowrap;
+  }
+
+  /* ── Video actions row ───────────────────────────────────────────── */
+  .video-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .video-yt-link {
+    font-size: 0.875rem;
+    color: var(--accent);
+  }
+  .next-step-btn {
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: #1f2937;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .next-step-btn:hover { transform: translateY(-1px); opacity: 0.92; }
+
+  /* ── Sidebar topic badges ────────────────────────────────────────── */
+
+  /* Done badge — hidden by default via CSS, shown by JS */
+  .topic-done-badge {
+    display: none; /* JS sets inline-flex when earned */
+    align-items: center;
+    margin-left: auto;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #166534;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Coming soon badge */
+  .topic-soon-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: #f3f4f6;
+    color: #6b7280;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Locked topics — visual dim, no interaction */
+  .topic-btn--locked {
+    opacity: 0.65;
+  }
+</style>

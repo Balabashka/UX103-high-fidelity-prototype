@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Register | UXplore">
+	<header class="page-header">
+		<p class="section-label">Account</p>
+		<h1>Register</h1>
+		<p class="lead">
+			Choose a username (lowercase letters, numbers, underscores) and a password (8+ characters). Already have an account?
+			<a href="/login">Log in</a>.
+		</p>
+	</header>
+
+	<div class="card auth-card">
+		<form class="auth-form" id="register-form">
+			<div class="form-row">
+				<label for="username">Username</label>
+				<input id="username" name="username" type="text" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
+				<p class="helper">Stored in lowercase. Letters, numbers, and underscores only.</p>
+			</div>
+			<div class="form-row">
+				<label for="password">Password</label>
+				<input id="password" name="password" type="password" autocomplete="new-password" required minlength="8" />
+			</div>
+			<p class="auth-error" id="register-error" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn" id="register-submit">Create account</button>
+			</div>
+		</form>
+	</div>
+</Layout>
+
+<script>
+	const form = document.getElementById('register-form') as HTMLFormElement;
+	const err = document.getElementById('register-error') as HTMLElement;
+	const submit = document.getElementById('register-submit') as HTMLButtonElement;
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		err.hidden = true;
+		submit.disabled = true;
+		const fd = new FormData(form);
+		const username = String(fd.get('username') ?? '').trim().toLowerCase();
+		const password = String(fd.get('password') ?? '');
+		try {
+			const res = await fetch('/api/auth/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify({ username, password }),
+			});
+			const data = (await res.json()) as { error?: string };
+			if (!res.ok) {
+				err.textContent = data.error ?? 'Could not register.';
+				err.hidden = false;
+				return;
+			}
+			window.location.href = '/asynchronous';
+		} catch {
+			err.textContent = 'Network error. Try again.';
+			err.hidden = false;
+		} finally {
+			submit.disabled = false;
+		}
+	});
+</script>

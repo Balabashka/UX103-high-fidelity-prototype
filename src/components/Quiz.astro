@@ -25,6 +25,7 @@ const { id, questions } = Astro.props;
 ---
 
 <div class="quiz-app" id={`quiz-${id}`} data-quiz-id={id}>
+  <p class="quiz-high-score" data-role="high-score" aria-live="polite"></p>
   <div class="quiz-progress">
     <div class="quiz-progress__bar"></div>
   </div>
@@ -119,6 +120,7 @@ document.querySelectorAll<HTMLElement>('.quiz-app').forEach(app => {
   const breakdown  = app.querySelector<HTMLElement>('.quiz-results__breakdown')!;
   const retryBtn   = app.querySelector<HTMLButtonElement>('.quiz-retry')!;
   const quizId     = app.dataset['quizId'] ?? '';
+  const highEl     = app.querySelector<HTMLElement>('[data-role="high-score"]')!;
 
   let current = 0;
   let score   = 0;
@@ -223,6 +225,43 @@ document.querySelectorAll<HTMLElement>('.quiz-app').forEach(app => {
     }, { once: true });
   }
 
+  async function refreshHighScore(): Promise<void> {
+    try {
+      const res = await fetch('/api/quiz/scores', { credentials: 'include' });
+      const data = (await res.json()) as {
+        scores?: { quizId: string; highCorrect: number; total: number }[];
+        loggedIn?: boolean;
+      };
+      if (!data.loggedIn) {
+        highEl.textContent = 'Log in to save your best score for this quiz.';
+        return;
+      }
+      const row = data.scores?.find(s => s.quizId === quizId);
+      if (!row) {
+        highEl.textContent = 'Your best (this quiz): not saved yet — finish a run while logged in.';
+      } else {
+        highEl.textContent = `Your best (this quiz): ${row.highCorrect} / ${row.total}`;
+      }
+    } catch {
+      highEl.textContent = '';
+    }
+  }
+
+  async function persistScore(correct: number, max: number): Promise<void> {
+    try {
+      await fetch('/api/quiz/score', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quizId, score: correct, total: max }),
+      });
+    } catch {
+      /* ignore */
+    }
+    await refreshHighScore();
+    window.dispatchEvent(new CustomEvent('uxplore-quiz-saved'));
+  }
+
   function showResults(): void {
     slidesWrap.hidden = true;
     app.querySelector<HTMLElement>('.quiz-progress')!.hidden = true;
@@ -246,6 +285,8 @@ document.querySelectorAll<HTMLElement>('.quiz-app').forEach(app => {
         </span>
       </div>
     `).join('');
+
+    void persistScore(score, total);
   }
 
   function init(): void {
@@ -279,6 +320,7 @@ document.querySelectorAll<HTMLElement>('.quiz-app').forEach(app => {
   }
 
   retryBtn.addEventListener('click', init);
+  void refreshHighScore();
   init();
 });
 </script>

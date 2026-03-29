@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Log in | UXplore">
+	<header class="page-header">
+		<p class="section-label">Account</p>
+		<h1>Log in</h1>
+		<p class="lead">Username and password only. New here? <a href="/register">Create an account</a>.</p>
+	</header>
+
+	<div class="card auth-card">
+		<form class="auth-form" id="login-form">
+			<div class="form-row">
+				<label for="username">Username</label>
+				<input id="username" name="username" type="text" autocomplete="username" required minlength="3" maxlength="32" pattern="[a-zA-Z0-9_]+" />
+			</div>
+			<div class="form-row">
+				<label for="password">Password</label>
+				<input id="password" name="password" type="password" autocomplete="current-password" required minlength="8" />
+			</div>
+			<p class="auth-error" id="login-error" hidden></p>
+			<div class="form-actions">
+				<button type="submit" class="btn" id="login-submit">Log in</button>
+			</div>
+		</form>
+	</div>
+</Layout>
+
+<script>
+	const form = document.getElementById('login-form') as HTMLFormElement;
+	const err = document.getElementById('login-error') as HTMLElement;
+	const submit = document.getElementById('login-submit') as HTMLButtonElement;
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		err.hidden = true;
+		submit.disabled = true;
+		const fd = new FormData(form);
+		const username = String(fd.get('username') ?? '').trim().toLowerCase();
+		const password = String(fd.get('password') ?? '');
+		try {
+			const res = await fetch('/api/auth/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'include',
+				body: JSON.stringify({ username, password }),
+			});
+			const data = (await res.json()) as { error?: string };
+			if (!res.ok) {
+				err.textContent = data.error ?? 'Could not log in.';
+				err.hidden = false;
+				return;
+			}
+			window.location.href = '/asynchronous';
+		} catch {
+			err.textContent = 'Network error. Try again.';
+			err.hidden = false;
+		} finally {
+			submit.disabled = false;
+		}
+	});
+</script>

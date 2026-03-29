@@ -7,47 +7,489 @@ import Layout from '../layouts/Layout.astro';
 		<p class="section-label">Learn together</p>
 		<h1>Synchronous</h1>
 		<p class="lead">
-			Live sessions on the left, people and community resources on the right—swap in real Zoom links and office-hour
-			times when you have them.
+			Join live sessions, connect with educators, and share feedback on your learning experience.
 		</p>
 	</header>
 
-	<div class="layout-split--50">
-		<div class="split-stack">
-			<section class="card">
-				<h2>Live session</h2>
-				<p class="prose">
-					<strong>Zoom link to join:</strong>
-					<em>(paste your meeting URL)</em>
-				</p>
-				<p class="helper">Tip: add the recurring schedule (day/time/time zone) so students know when to show up.</p>
-			</section>
+	<!-- ── Live Session ───────────────────────────────────────────────── -->
+	<section class="card" aria-labelledby="live-heading">
+		<h2 id="live-heading">Live Session</h2>
+		<p>Join your scheduled class live via Zoom. Make sure you're logged in to your Zoom account before clicking the link.</p>
+		<a class="zoom-btn" href="https://zoom.us/j/your-meeting-id" target="_blank" rel="noopener noreferrer">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<rect width="24" height="24" rx="5" fill="#2D8CFF"/>
+				<path d="M4 8.5A1.5 1.5 0 015.5 7h7A1.5 1.5 0 0114 8.5v7A1.5 1.5 0 0112.5 17h-7A1.5 1.5 0 014 15.5v-7zM16 10.2l3.6-2.4A.5.5 0 0120 8.2v7.6a.5.5 0 01-.8.4L16 13.8V10.2z" fill="#fff"/>
+			</svg>
+			Join Zoom Class
+		</a>
+		<p class="helper" style="margin-top:0.75rem;">Replace the link above with your actual recurring Zoom meeting URL.</p>
+	</section>
 
-			<section class="card">
-				<h2>Office hours</h2>
-				<p class="prose">
-					Use this block for feedback and questions—<em>add times, location (virtual room), and how to book a slot</em>.
-				</p>
-			</section>
+	<!-- ── Office Hours / Educators ───────────────────────────────────── -->
+	<section class="card" aria-labelledby="educators-heading">
+		<h2 id="educators-heading">Office Hours &amp; Educator Contact</h2>
+		<p class="helper" style="margin-bottom:1.25rem;">Reach out directly by email or drop in during any of the office hours below.</p>
+
+		<div class="educators-grid">
+			<div class="educator-card">
+				<div class="educator-card__header">
+					<span class="educator-avatar">JL</span>
+					<div>
+						<p class="educator-name">Jamie Liattis</p>
+						<a class="educator-email" href="mailto:123myUXplore@gmail.com">123myUXplore@gmail.com</a>
+					</div>
+				</div>
+				<ul class="educator-hours">
+					<li><span class="day">Monday</span> 3:30 pm – 5:00 pm</li>
+					<li><span class="day">Thursday</span> 5:00 pm – 7:00 pm</li>
+				</ul>
+			</div>
+
+			<div class="educator-card">
+				<div class="educator-card__header">
+					<span class="educator-avatar">SC</span>
+					<div>
+						<p class="educator-name">Sue Cumberbach</p>
+						<a class="educator-email" href="mailto:456myUXplore@gmail.com">456myUXplore@gmail.com</a>
+					</div>
+				</div>
+				<ul class="educator-hours">
+					<li><span class="day">Tuesday</span> 9:00 am – 10:00 am</li>
+					<li><span class="day">Wednesday</span> 7:00 pm – 9:00 pm</li>
+				</ul>
+			</div>
+
+			<div class="educator-card">
+				<div class="educator-card__header">
+					<span class="educator-avatar">ZK</span>
+					<div>
+						<p class="educator-name">Zara Khar</p>
+						<a class="educator-email" href="mailto:1020myUXplore@gmail.com">1020myUXplore@gmail.com</a>
+					</div>
+				</div>
+				<ul class="educator-hours">
+					<li><span class="day">Friday</span> 4:00 pm – 7:00 pm</li>
+				</ul>
+			</div>
+
+			<div class="educator-card">
+				<div class="educator-card__header">
+					<span class="educator-avatar">JS</span>
+					<div>
+						<p class="educator-name">Jennifer Sinclair</p>
+						<a class="educator-email" href="mailto:789myUXplore@gmail.com">789myUXplore@gmail.com</a>
+					</div>
+				</div>
+				<ul class="educator-hours">
+					<li><span class="day">Monday</span> 7:00 pm – 8:00 pm</li>
+					<li><span class="day">Tuesday</span> 5:30 pm – 6:30 pm</li>
+				</ul>
+			</div>
 		</div>
+	</section>
 
-		<div class="split-stack">
-			<section class="card">
-				<h2>Volunteer instructors</h2>
-				<p class="prose">
-					<strong>Email list / contact:</strong>
-					<em>volunteer-profs@example.edu</em> <span class="helper">(replace with a real address or form)</span>
-				</p>
-				<p class="prose">Short note on what students should put in the subject line helps keep inboxes manageable.</p>
-			</section>
-
-			<section class="card">
-				<h2>Class discussion</h2>
-				<p class="prose">
-					For async conversations with classmates, use the
-					<a href="/discussion">discussion board</a>—keep live sessions focused and follow up in the forum.
-				</p>
-			</section>
+	<!-- ── Schedule ───────────────────────────────────────────────────── -->
+	<section class="card" aria-labelledby="schedule-heading">
+		<h2 id="schedule-heading">Class Schedule</h2>
+		<p class="helper" style="margin-bottom:1rem;">View the full session calendar below. Click any event for details.</p>
+		<div class="calendar-placeholder" role="img" aria-label="Class schedule calendar">
+			<svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<!-- Calendar frame -->
+				<rect width="560" height="320" rx="10" fill="#f8f7f5"/>
+				<!-- Header bar -->
+				<rect width="560" height="48" rx="10" fill="#0f766e"/>
+				<rect y="38" width="560" height="10" fill="#0f766e"/>
+				<!-- Month label -->
+				<text x="280" y="30" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#fff">April 2025</text>
+				<!-- Nav arrows -->
+				<text x="24" y="30" font-family="system-ui,sans-serif" font-size="18" fill="#ccfbf1">‹</text>
+				<text x="530" y="30" font-family="system-ui,sans-serif" font-size="18" fill="#ccfbf1">›</text>
+				<!-- Day headers -->
+				<text x="44"  y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">SUN</text>
+				<text x="124" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">MON</text>
+				<text x="204" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">TUE</text>
+				<text x="284" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">WED</text>
+				<text x="364" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">THU</text>
+				<text x="444" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">FRI</text>
+				<text x="524" y="72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#57534e">SAT</text>
+				<!-- Divider -->
+				<line x1="8" y1="78" x2="552" y2="78" stroke="#e7e5e4" stroke-width="1"/>
+				<!-- Week rows — date numbers -->
+				<!-- Row 1 -->
+				<text x="44"  y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#a8a29e">30</text>
+				<text x="124" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">31</text>
+				<text x="204" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">1</text>
+				<text x="284" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">2</text>
+				<text x="364" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">3</text>
+				<text x="444" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">4</text>
+				<text x="524" y="100" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">5</text>
+				<!-- Row 2 -->
+				<text x="44"  y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">6</text>
+				<text x="124" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">7</text>
+				<text x="204" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">8</text>
+				<text x="284" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">9</text>
+				<text x="364" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">10</text>
+				<text x="444" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">11</text>
+				<text x="524" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">12</text>
+				<!-- Session event Mon 7, Tue 8 -->
+				<rect x="84" y="144" width="80" height="16" rx="4" fill="#ccfbf1"/>
+				<text x="124" y="155" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#0f766e" font-weight="600">Live class</text>
+				<rect x="164" y="144" width="80" height="16" rx="4" fill="#ccfbf1"/>
+				<text x="204" y="155" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#0f766e" font-weight="600">Office hrs</text>
+				<!-- Row 3 -->
+				<text x="44"  y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">13</text>
+				<!-- Today highlight -->
+				<circle cx="124" cy="182" r="13" fill="#0f766e"/>
+				<text x="124" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#fff" font-weight="700">14</text>
+				<text x="204" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">15</text>
+				<text x="284" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">16</text>
+				<text x="364" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">17</text>
+				<text x="444" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">18</text>
+				<text x="524" y="186" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">19</text>
+				<rect x="84" y="190" width="80" height="16" rx="4" fill="#ccfbf1"/>
+				<text x="124" y="201" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#0f766e" font-weight="600">Live class</text>
+				<!-- Row 4 -->
+				<text x="44"  y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">20</text>
+				<text x="124" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">21</text>
+				<text x="204" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">22</text>
+				<text x="284" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">23</text>
+				<text x="364" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">24</text>
+				<text x="444" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">25</text>
+				<text x="524" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">26</text>
+				<rect x="244" y="236" width="80" height="16" rx="4" fill="#ede9fe"/>
+				<text x="284" y="247" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#7c3aed" font-weight="600">Office hrs</text>
+				<!-- Row 5 -->
+				<text x="44"  y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">27</text>
+				<text x="124" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">28</text>
+				<text x="204" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">29</text>
+				<text x="284" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#1c1917">30</text>
+				<text x="364" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#a8a29e">1</text>
+				<text x="444" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#a8a29e">2</text>
+				<text x="524" y="278" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#a8a29e">3</text>
+				<rect x="84" y="282" width="80" height="16" rx="4" fill="#ccfbf1"/>
+				<text x="124" y="293" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#0f766e" font-weight="600">Live class</text>
+				<!-- Row dividers -->
+				<line x1="8" y1="116" x2="552" y2="116" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="8" y1="162" x2="552" y2="162" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="8" y1="208" x2="552" y2="208" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="8" y1="254" x2="552" y2="254" stroke="#e7e5e4" stroke-width="0.5"/>
+				<!-- Col dividers -->
+				<line x1="84"  y1="56" x2="84"  y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="164" y1="56" x2="164" y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="244" y1="56" x2="244" y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="324" y1="56" x2="324" y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="404" y1="56" x2="404" y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+				<line x1="484" y1="56" x2="484" y2="312" stroke="#e7e5e4" stroke-width="0.5"/>
+			</svg>
 		</div>
-	</div>
+		<p class="helper" style="margin-top:0.75rem;">
+			Replace this placeholder with an embedded Google Calendar or upload a schedule image.
+		</p>
+	</section>
+
+	<!-- ── Educator Review ────────────────────────────────────────────── -->
+	<section class="card" aria-labelledby="review-heading">
+		<h2 id="review-heading">Educator Review</h2>
+		<p>Rank how you feel about the content on this website and your learning experience overall.</p>
+		<p class="helper" style="margin-bottom:1.5rem;">Scale: 1 = Very poor &nbsp;·&nbsp; 3 = Indifferent &nbsp;·&nbsp; 5 = Excellent</p>
+
+		<form class="review-form" id="review-form" novalidate>
+			<div class="form-row">
+				<label for="reviewer-name">1. Your full name</label>
+				<input type="text" id="reviewer-name" name="reviewerName" placeholder="First and last name" autocomplete="name" required />
+			</div>
+
+			<div class="form-row">
+				<label for="teacher-name">2. Educator's name</label>
+				<select id="teacher-name" name="teacherName" required>
+					<option value="" disabled selected>Select an educator…</option>
+					<option>Jamie Liattis</option>
+					<option>Sue Cumberbach</option>
+					<option>Zara Khar</option>
+					<option>Jennifer Sinclair</option>
+				</select>
+			</div>
+
+			<div class="form-row">
+				<label>3. I feel the educator has offered opportunity to ask questions and challenge ideas</label>
+				<div class="rating-scale" role="radiogroup" aria-label="Question 3 rating">
+					{[1,2,3,4,5].map(n => (
+						<label class="rating-option">
+							<input type="radio" name="q3" value={n} required />
+							<span class="rating-option__num">{n}</span>
+						</label>
+					))}
+					<span class="rating-label rating-label--lo">Poor</span>
+					<span class="rating-label rating-label--hi">Excellent</span>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<label>4. This educator has conducted interactive learning experiences during class time</label>
+				<div class="rating-scale" role="radiogroup" aria-label="Question 4 rating">
+					{[1,2,3,4,5].map(n => (
+						<label class="rating-option">
+							<input type="radio" name="q4" value={n} required />
+							<span class="rating-option__num">{n}</span>
+						</label>
+					))}
+					<span class="rating-label rating-label--lo">Poor</span>
+					<span class="rating-label rating-label--hi">Excellent</span>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<label>5. I feel encouraged and motivated to return to synchronous lessons after each class</label>
+				<div class="rating-scale" role="radiogroup" aria-label="Question 5 rating">
+					{[1,2,3,4,5].map(n => (
+						<label class="rating-option">
+							<input type="radio" name="q5" value={n} required />
+							<span class="rating-option__num">{n}</span>
+						</label>
+					))}
+					<span class="rating-label rating-label--lo">Poor</span>
+					<span class="rating-label rating-label--hi">Excellent</span>
+				</div>
+			</div>
+
+			<div class="form-row">
+				<label for="extra-feedback">6. Additional feedback for your educator <span class="helper">(only they will receive these suggestions)</span></label>
+				<textarea id="extra-feedback" name="extraFeedback" rows="4" placeholder="Share any thoughts, suggestions, or praise…"></textarea>
+			</div>
+
+			<div class="form-actions">
+				<button class="btn" type="submit">Submit review</button>
+				<p class="review-confirm" id="review-confirm" hidden>✓ Thank you — your feedback has been submitted.</p>
+			</div>
+		</form>
+	</section>
 </Layout>
+
+<script>
+  const form = document.getElementById('review-form') as HTMLFormElement | null;
+  const confirm = document.getElementById('review-confirm') as HTMLElement | null;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    // Replace with real form submission (e.g. fetch to an API endpoint)
+    if (confirm) {
+      confirm.hidden = false;
+      (form.querySelector('button[type="submit"]') as HTMLButtonElement).disabled = true;
+    }
+  });
+</script>
+
+<style>
+	/* ── Zoom button ─────────────────────────────────────────────────── */
+	.zoom-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		background: #2D8CFF;
+		color: #fff;
+		font-weight: 700;
+		font-size: 0.95rem;
+		padding: 0.65rem 1.25rem;
+		border-radius: 8px;
+		text-decoration: none;
+		margin-top: 0.75rem;
+		transition: opacity 0.15s, transform 0.15s;
+	}
+	.zoom-btn svg {
+		width: 24px;
+		height: 24px;
+		flex-shrink: 0;
+	}
+	.zoom-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+	/* ── Educators grid ──────────────────────────────────────────────── */
+	.educators-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+	}
+	@media (max-width: 600px) {
+		.educators-grid { grid-template-columns: 1fr; }
+	}
+
+	.educator-card {
+		background: rgba(250,250,249,0.8);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		padding: 1rem;
+	}
+
+	.educator-card__header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.educator-avatar {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		border-radius: 50%;
+		background: var(--accent);
+		color: #fff;
+		font-weight: 700;
+		font-size: 0.85rem;
+		flex-shrink: 0;
+	}
+
+	.educator-name {
+		margin: 0 0 0.1rem;
+		font-weight: 600;
+		font-size: 0.95rem;
+	}
+
+	.educator-email {
+		font-size: 0.82rem;
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.educator-email:hover { text-decoration: underline; }
+
+	.educator-hours {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		font-size: 0.875rem;
+		color: var(--muted);
+	}
+
+	.educator-hours .day {
+		display: inline-block;
+		width: 5.5rem;
+		font-weight: 600;
+		color: var(--text);
+	}
+
+	/* ── Calendar placeholder ────────────────────────────────────────── */
+	.calendar-placeholder {
+		width: 100%;
+		border-radius: var(--radius-sm);
+		overflow: hidden;
+		border: 1px solid var(--border);
+	}
+	.calendar-placeholder svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/* ── Review form ─────────────────────────────────────────────────── */
+	.review-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.review-form .form-row label {
+		display: block;
+		font-weight: 600;
+		font-size: 0.9rem;
+		margin-bottom: 0.4rem;
+	}
+
+	.review-form input[type="text"],
+	.review-form select,
+	.review-form textarea {
+		width: 100%;
+		max-width: 28rem;
+		padding: 0.55rem 0.7rem;
+		font: inherit;
+		font-size: 0.9rem;
+		border: 1.5px solid var(--border);
+		border-radius: var(--radius-sm);
+		background: rgba(250,250,249,0.9);
+		transition: border-color 0.15s;
+		outline: none;
+	}
+
+	.review-form textarea {
+		max-width: 100%;
+		resize: vertical;
+	}
+
+	.review-form input[type="text"]:focus,
+	.review-form select:focus,
+	.review-form textarea:focus {
+		border-color: #5eead4;
+		background: #fff;
+	}
+
+	/* ── Rating scale ────────────────────────────────────────────────── */
+	.rating-scale {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+		margin-top: 0.4rem;
+	}
+
+	.rating-option {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+		cursor: pointer;
+	}
+
+	.rating-option input[type="radio"] {
+		display: none;
+	}
+
+	.rating-option__num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.4rem;
+		height: 2.4rem;
+		border-radius: 50%;
+		border: 2px solid var(--border);
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: var(--muted);
+		background: rgba(250,250,249,0.9);
+		transition: border-color 0.15s, background 0.15s, color 0.15s;
+		cursor: pointer;
+	}
+
+	.rating-option input[type="radio"]:checked + .rating-option__num {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: #fff;
+	}
+
+	.rating-option:hover .rating-option__num {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.rating-label {
+		font-size: 0.75rem;
+		color: var(--muted);
+		font-weight: 500;
+	}
+	.rating-label--lo { margin-left: 0.25rem; }
+	.rating-label--hi { margin-left: 0.25rem; }
+
+	/* ── Confirm message ─────────────────────────────────────────────── */
+	.review-confirm {
+		margin: 0.5rem 0 0;
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: #0f766e;
+	}
+</style>

@@ -11,44 +11,198 @@ import Layout from '../layouts/Layout.astro';
 		</p>
 	</header>
 
-	<div class="layout-split">
-		<div class="split-stack">
-			<div class="card">
-				<div class="prose">
-					<p>
-						Welcome to <strong>UXplore</strong>, a virtual classroom where you can guide your learning using our
-						resources whether it be synchronous or asynchronous. Our mission is to make your education journey
-						effortless and engaging. We offer online classes, video tutorials, and hands-on opportunities to learn
-						and test your knowledge.
-					</p>
-					<p>
-						If you are a first-year student looking to enrich your UX abilities—good news: you’re in the right place!
-					</p>
-				</div>
+	<div class="card home-welcome">
+		<div class="prose">
+			<p>
+				Welcome to <strong>UXplore</strong>, a virtual classroom where you can guide your learning using our
+				resources whether it be synchronous or asynchronous. Our mission is to make your education journey
+				effortless and engaging. We offer online classes, video tutorials, and hands-on opportunities to learn
+				and test your knowledge.
+			</p>
+			<p>
+				If you are a first-year student looking to enrich your UX abilities—good news: you're in the right place!
+			</p>
+		</div>
+	</div>
+
+	<section class="card home-section" aria-labelledby="getting-started-heading">
+		<h2 id="getting-started-heading">Getting Started</h2>
+		<p>
+			To begin or continue your journey, start by clicking your preferred choice of learning—either
+			asynchronous or synchronous.
+		</p>
+
+		<p class="home-section__question">Unsure where to go?</p>
+
+		<div class="home-explainers">
+			<div class="home-explainer home-explainer--teal">
+				<span class="home-explainer__label">Asynchronous</span>
+				<p>
+					If you prefer to work on your own time with no face-to-face interaction, we have the perfect page for you.
+					Learn through posted videos, then complete the quiz to test your knowledge and identify where you can
+					improve. You can select the UX topic that interests you most or that you haven't completed yet.
+				</p>
+				<a class="home-explainer__link" href="/asynchronous">Go to Asynchronous →</a>
+			</div>
+			<div class="home-explainer home-explainer--violet">
+				<span class="home-explainer__label">Synchronous</span>
+				<p>
+					If you prefer to learn by speaking in real time with an educator, visit the synchronous page where you
+					can join a live class via Zoom and participate in activities led in class.
+				</p>
+				<a class="home-explainer__link" href="/synchronous">Go to Synchronous →</a>
 			</div>
 		</div>
-		<aside class="split-stack">
-			<div class="card">
-				<h2 class="card-title-tight">Where to go next</h2>
-				<nav class="home-nav" aria-label="Main sections">
-					<a class="home-nav__btn home-nav__btn--teal" href="/asynchronous">
-						<span class="home-nav__title">Asynchronous</span>
-						<span class="home-nav__desc">Video modules &amp; quizzes</span>
-					</a>
-					<a class="home-nav__btn home-nav__btn--violet" href="/synchronous">
-						<span class="home-nav__title">Synchronous</span>
-						<span class="home-nav__desc">Live sessions &amp; office hours</span>
-					</a>
-					<a class="home-nav__btn home-nav__btn--amber" href="/case-study">
-						<span class="home-nav__title">Case study</span>
-						<span class="home-nav__desc">Smart Campus challenge</span>
-					</a>
-					<a class="home-nav__btn home-nav__btn--sky" href="/discussion">
-						<span class="home-nav__title">Discussion board</span>
-						<span class="home-nav__desc">Ask classmates</span>
-					</a>
-				</nav>
-			</div>
-		</aside>
-	</div>
+
+		<p class="home-section__question">Still have questions about content?</p>
+		<p>
+			Visit the <a href="/discussion">Discussion Board</a> where you can communicate and ask questions,
+			share comments, or opinions related to the course. If you feel confident in your knowledge, feel
+			free to reply to others. By communicating freely with fellow students we can build a UX learning
+			community together!
+		</p>
+
+		<p class="home-section__question">Take your experience one step further</p>
+		<p>
+			To test yourself and apply your learning, UXplore is offering a chance to compete and learn
+			alongside others in a virtual case competition. Visit the <a href="/case-study">Case Study</a> page
+			to see instructions, a preview of the upcoming challenge, and to sign up yourself and your team
+			members.
+		</p>
+
+		<p class="home-cta-lead">
+			Begin your learning experience by clicking the button of your choice below, or use the navigation menu at the top of every page!
+		</p>
+	</section>
+
+	<nav class="home-nav-grid" aria-label="Main sections">
+		<a class="home-nav__btn home-nav__btn--teal" href="/asynchronous">
+			<span class="home-nav__title">Asynchronous</span>
+			<span class="home-nav__desc">Video modules &amp; quizzes — learn at your own pace</span>
+		</a>
+		<a class="home-nav__btn home-nav__btn--violet" href="/synchronous">
+			<span class="home-nav__title">Synchronous</span>
+			<span class="home-nav__desc">Live Zoom sessions &amp; in-class activities</span>
+		</a>
+		<a class="home-nav__btn home-nav__btn--sky" href="/discussion">
+			<span class="home-nav__title">Discussion Board</span>
+			<span class="home-nav__desc">Ask questions &amp; connect with classmates</span>
+		</a>
+		<a class="home-nav__btn home-nav__btn--amber" href="/case-study">
+			<span class="home-nav__title">Case Study</span>
+			<span class="home-nav__desc">Virtual case competition &amp; challenge</span>
+		</a>
+	</nav>
 </Layout>
+
+<style>
+	.home-welcome {
+		margin-bottom: 1.5rem;
+	}
+
+	.home-section {
+		margin-bottom: 2rem;
+	}
+
+	.home-section h2 {
+		margin-bottom: 0.75rem;
+	}
+
+	.home-section p {
+		margin: 0 0 1rem;
+		max-width: 52rem;
+	}
+
+	.home-section a {
+		color: var(--accent);
+		font-weight: 500;
+		text-decoration: none;
+	}
+
+	.home-section a:hover {
+		text-decoration: underline;
+	}
+
+	.home-section__question {
+		font-weight: 700;
+		font-size: 1rem;
+		color: var(--text);
+		margin: 1.5rem 0 0.5rem !important;
+	}
+
+	.home-explainers {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem;
+		margin: 0.5rem 0 1.5rem;
+	}
+
+	@media (max-width: 640px) {
+		.home-explainers { grid-template-columns: 1fr; }
+	}
+
+	.home-explainer {
+		border-radius: var(--radius-sm);
+		padding: 1rem 1.1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.home-explainer--teal {
+		background: var(--accent-soft);
+		border-left: 4px solid var(--accent);
+	}
+
+	.home-explainer--violet {
+		background: #ede9fe;
+		border-left: 4px solid #7c3aed;
+	}
+
+	.home-explainer__label {
+		font-weight: 700;
+		font-size: 0.9rem;
+		color: var(--text);
+	}
+
+	.home-explainer p {
+		margin: 0 !important;
+		font-size: 0.9rem;
+		color: var(--muted);
+	}
+
+	.home-explainer__link {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+		margin-top: 0.25rem;
+	}
+
+	.home-explainer--violet .home-explainer__link {
+		color: #7c3aed;
+	}
+
+	.home-explainer__link:hover {
+		text-decoration: underline;
+	}
+
+	.home-cta-lead {
+		margin-top: 1.75rem !important;
+		font-weight: 500;
+		color: var(--muted);
+		font-size: 0.95rem;
+		margin-bottom: 0 !important;
+	}
+
+	.home-nav-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+		margin-bottom: 2rem;
+	}
+
+	@media (max-width: 540px) {
+		.home-nav-grid { grid-template-columns: 1fr; }
+	}
+</style>

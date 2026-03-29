@@ -12,6 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "4.16.19"
+    "@astrojs/node": "^8.3.0",
+    "astro": "4.16.19",
+    "bcryptjs": "^3.0.3",
+    "mongodb": "^6.21.0"
   }
 }

@@ -1,5 +1,12 @@
 ---
 const pathname = Astro.url.pathname;
+
+interface Props {
+	user: { id: string; username: string } | null;
+}
+
+const { user } = Astro.props;
+
 const links = [
 	{ href: '/', label: 'Home' },
 	{ href: '/asynchronous', label: 'Asynchronous' },
@@ -18,7 +25,7 @@ function isActive(href: string) {
 		<a class="brand" href="/">UXplore</a>
 		<p class="tagline">Virtual classroom</p>
 	</div>
-	<ul>
+	<ul class="nav-links">
 		{
 			links.map(({ href, label }) => (
 				<li>
@@ -29,7 +36,37 @@ function isActive(href: string) {
 			))
 		}
 	</ul>
+	<div class="nav-auth">
+		{
+			user ? (
+				<>
+					<span class="nav-user" title={user.username}>
+						@{user.username}
+					</span>
+					<button type="button" class="nav-logout" id="nav-logout">
+						Log out
+					</button>
+				</>
+			) : (
+				<>
+					<a class="nav-auth-link" href="/login" aria-current={pathname === '/login' ? 'page' : undefined}>
+						Log in
+					</a>
+					<a class="nav-auth-link nav-auth-link--primary" href="/register" aria-current={pathname === '/register' ? 'page' : undefined}>
+						Register
+					</a>
+				</>
+			)
+		}
+	</div>
 </nav>
+
+<script>
+	document.getElementById('nav-logout')?.addEventListener('click', async () => {
+		await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+		window.location.href = '/';
+	});
+</script>
 
 <style>
 	.site-nav {
@@ -68,7 +105,7 @@ function isActive(href: string) {
 		font-size: 0.75rem;
 		color: var(--muted, #57534e);
 	}
-	.site-nav ul {
+	.nav-links {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -79,19 +116,71 @@ function isActive(href: string) {
 		padding: 0;
 		flex: 1;
 	}
-	.site-nav li a {
+	.nav-links li a {
 		display: inline-block;
 		padding: 0.4rem 0.65rem;
 		border-radius: 8px;
 		color: var(--text, #1c1917);
 		text-decoration: none;
 	}
-	.site-nav li a:hover {
+	.nav-links li a:hover {
 		background: #f5f3ef;
 	}
-	.site-nav a[aria-current='page'] {
+	.nav-links a[aria-current='page'] {
 		font-weight: 650;
 		background: #ccfbf1;
 		color: #115e59;
+	}
+	.nav-auth {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem 0.75rem;
+	}
+	.nav-user {
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: var(--muted, #57534e);
+		max-width: 10rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.nav-logout {
+		font: inherit;
+		font-size: 0.85rem;
+		font-weight: 600;
+		color: #115e59;
+		background: var(--accent-soft, #ccfbf1);
+		border: 1px solid #5eead4;
+		border-radius: 8px;
+		padding: 0.35rem 0.65rem;
+		cursor: pointer;
+	}
+	.nav-logout:hover {
+		background: #99f6e4;
+	}
+	.nav-auth-link {
+		font-size: 0.85rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--text, #1c1917);
+		padding: 0.35rem 0.65rem;
+		border-radius: 8px;
+	}
+	.nav-auth-link:hover {
+		background: #f5f3ef;
+	}
+	.nav-auth-link--primary {
+		background: var(--accent, #0f766e);
+		color: #fff;
+	}
+	.nav-auth-link--primary:hover {
+		background: var(--accent-hover, #0d9488);
+		color: #fff;
+	}
+	.nav-auth a[aria-current='page'] {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
 	}
 </style>

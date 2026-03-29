@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const user = Astro.locals.user;
 ---
 
 <Layout title="Discussion board | UXplore">
@@ -7,437 +9,568 @@ import Layout from '../layouts/Layout.astro';
 		<p class="section-label">Community</p>
 		<h1>Discussion board</h1>
 		<p class="lead">
-			Ask questions, share ideas, and connect with classmates. Static prototype — real posting comes when the backend is wired up.
+			Threads are stored in the database. {!user && <><a href="/login">Log in</a> to start a new thread.</>}
+			{user && <>Posting as <strong>@{user.username}</strong>.</>}
 		</p>
 	</header>
 
-	<!-- Forum chrome -->
-	<div class="forum-layout">
-
-		<!-- Top bar: category filters + search -->
+	<div class="forum-layout" id="forum-app" data-logged-in={user ? '1' : '0'}>
 		<div class="forum-topbar">
 			<div class="forum-cats" role="group" aria-label="Filter by category">
-				<button class="forum-cat forum-cat--active" data-cat="all">All threads</button>
-				<button class="forum-cat" data-cat="arvr">
+				<button type="button" class="forum-cat forum-cat--active" data-cat="all">All threads</button>
+				<button type="button" class="forum-cat" data-cat="arvr">
 					<span class="forum-cat__dot" style="background:#0d9488"></span>AR / VR
 				</button>
-				<button class="forum-cat" data-cat="project">
+				<button type="button" class="forum-cat" data-cat="project">
 					<span class="forum-cat__dot" style="background:#7c3aed"></span>Smart Campus
 				</button>
-				<button class="forum-cat" data-cat="general">
+				<button type="button" class="forum-cat" data-cat="general">
 					<span class="forum-cat__dot" style="background:#d97706"></span>General
 				</button>
 			</div>
 
 			<div class="forum-search-wrap">
 				<svg class="forum-search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-					<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
-					<path d="M10 10.5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+					<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"></circle>
+					<path d="M10 10.5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
 				</svg>
-				<input class="forum-search-input" type="search" placeholder="Search threads…" id="forum-search" aria-label="Search threads" />
-			</div>
-		</div>
-
-		<!-- Thread list -->
-		<div class="forum-threads" id="forum-threads" role="feed">
-
-			<article class="fthread" data-cat="arvr">
-				<div class="fthread__avatar fthread__avatar--teal" aria-hidden="true">A</div>
-				<div class="fthread__body">
-					<div class="fthread__meta">
-						<span class="fthread__author">Alex</span>
-						<span class="fthread__cat fthread__cat--teal">AR / VR</span>
-						<span class="fthread__time">2h ago</span>
-					</div>
-					<h2 class="fthread__title">IKEA Place vs in-store: is that always "AR"?</h2>
-					<p class="fthread__snippet">For the quiz I'm tying it to "overlay on real environment" — does that match what others wrote? The IKEA Place app seems like a clear case but I want to double-check before my submission.</p>
-					<div class="fthread__footer">
-						<span class="fthread__stat">
-							<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C4.134 2 1 4.686 1 8c0 1.385.511 2.659 1.363 3.671L1.5 14l2.653-.863A7.06 7.06 0 0 0 8 14c3.866 0 7-2.686 7-6s-3.134-6-7-6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-							6 replies
-						</span>
-						<button class="fthread__reply-btn" disabled>Reply</button>
-					</div>
-				</div>
-			</article>
-
-			<article class="fthread" data-cat="project">
-				<div class="fthread__avatar fthread__avatar--violet" aria-hidden="true">B</div>
-				<div class="fthread__body">
-					<div class="fthread__meta">
-						<span class="fthread__author">Bo</span>
-						<span class="fthread__cat fthread__cat--violet">Smart Campus</span>
-						<span class="fthread__time">5h ago</span>
-					</div>
-					<h2 class="fthread__title">Random group + friend request both checked?</h2>
-					<p class="fthread__snippet">Does the sign-up form prioritize random assignment or should we email the prof? My friend and I are in different sections and both checked both options.</p>
-					<div class="fthread__footer">
-						<span class="fthread__stat">
-							<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C4.134 2 1 4.686 1 8c0 1.385.511 2.659 1.363 3.671L1.5 14l2.653-.863A7.06 7.06 0 0 0 8 14c3.866 0 7-2.686 7-6s-3.134-6-7-6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-							3 replies
-						</span>
-						<button class="fthread__reply-btn" disabled>Reply</button>
-					</div>
-				</div>
-			</article>
-
-			<article class="fthread" data-cat="general">
-				<div class="fthread__avatar fthread__avatar--amber" aria-hidden="true">C</div>
-				<div class="fthread__body">
-					<div class="fthread__meta">
-						<span class="fthread__author">Casey</span>
-						<span class="fthread__cat fthread__cat--amber">General</span>
-						<span class="fthread__time">1d ago</span>
-					</div>
-					<h2 class="fthread__title">Office hours Zoom link?</h2>
-					<p class="fthread__snippet">The synced page still says "paste URL" — did I miss it somewhere in the syllabus? Checked under Week 3 resources too.</p>
-					<div class="fthread__footer">
-						<span class="fthread__stat">
-							<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C4.134 2 1 4.686 1 8c0 1.385.511 2.659 1.363 3.671L1.5 14l2.653-.863A7.06 7.06 0 0 0 8 14c3.866 0 7-2.686 7-6s-3.134-6-7-6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-							12 replies
-						</span>
-						<button class="fthread__reply-btn" disabled>Reply</button>
-					</div>
-				</div>
-			</article>
-
-			<article class="fthread" data-cat="project">
-				<div class="fthread__avatar fthread__avatar--rose" aria-hidden="true">D</div>
-				<div class="fthread__body">
-					<div class="fthread__meta">
-						<span class="fthread__author">Dana</span>
-						<span class="fthread__cat fthread__cat--violet">Smart Campus</span>
-						<span class="fthread__time">2d ago</span>
-					</div>
-					<h2 class="fthread__title">IoT + study rooms: camera sensors?</h2>
-					<p class="fthread__snippet">Team is debating privacy vs occupancy detection — are there examples from lecture we can reference for the proposal? Specifically around anonymised sensor data.</p>
-					<div class="fthread__footer">
-						<span class="fthread__stat">
-							<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C4.134 2 1 4.686 1 8c0 1.385.511 2.659 1.363 3.671L1.5 14l2.653-.863A7.06 7.06 0 0 0 8 14c3.866 0 7-2.686 7-6s-3.134-6-7-6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
-							4 replies
-						</span>
-						<button class="fthread__reply-btn" disabled>Reply</button>
-					</div>
-				</div>
-			</article>
-
-			<p class="forum-empty" id="forum-empty" hidden>No threads match your filter.</p>
-		</div>
-
-		<!-- Composer -->
-		<div class="forum-composer">
-			<div class="forum-composer__header">
-				<div class="fthread__avatar fthread__avatar--teal" aria-hidden="true" style="width:2rem;height:2rem;font-size:0.8rem">Y</div>
 				<input
-					class="forum-composer__input"
-					type="text"
-					placeholder="Start a new thread… (disabled in prototype)"
-					disabled
-					aria-label="New thread title"
+					class="forum-search-input"
+					type="search"
+					placeholder="Search threads…"
+					id="forum-search"
+					aria-label="Search threads"
+					autocomplete="off"
 				/>
-				<button class="btn forum-composer__btn" disabled>Post</button>
 			</div>
 		</div>
 
+		<div class="forum-threads" id="forum-threads" role="feed" aria-busy="true">
+			<p class="forum-loading" id="forum-loading">Loading threads…</p>
+			<p class="forum-empty" id="forum-empty" hidden>No threads yet. Be the first to post.</p>
+			<p class="forum-empty" id="forum-filter-empty" hidden>No threads match your filter.</p>
+		</div>
+
+		<div class:list={['forum-composer', { 'forum-composer--locked': !user }]}>
+			{
+				user ? (
+					<>
+						<p class="forum-composer__label">New thread</p>
+						<div class="forum-composer__header" style="align-items:flex-start">
+							<div
+								class="fthread__avatar fthread__avatar--teal"
+								aria-hidden="true"
+								style="width:2rem;height:2rem;font-size:0.8rem"
+							>
+								{user.username.slice(0, 1).toUpperCase()}
+							</div>
+							<div class="forum-composer__row">
+								<select class="forum-composer__cat" id="forum-new-cat" aria-label="Category">
+									<option value="general">General</option>
+									<option value="arvr">AR / VR</option>
+									<option value="project">Smart Campus</option>
+								</select>
+								<input
+									class="forum-composer__input"
+									type="text"
+									id="forum-new-title"
+									placeholder="Thread title…"
+									maxlength="200"
+									aria-label="Thread title"
+								/>
+								<textarea
+									class="forum-composer__body"
+									id="forum-new-body"
+									placeholder="What do you want to say?"
+									aria-label="Thread body"
+								></textarea>
+								<p class="forum-post-err" id="forum-post-err" hidden></p>
+								<button type="button" class="btn forum-composer__btn" id="forum-post-btn">
+									Post
+								</button>
+							</div>
+						</div>
+					</>
+				) : (
+					<p class="helper" style="margin:0">
+						<a href="/login">Log in</a> or <a href="/register">register</a> to post a thread.
+					</p>
+				)
+			}
+		</div>
 	</div>
 </Layout>
 
-<style>
-/* ── Forum layout ─────────────────────────────────────────────────────────── */
-.forum-layout {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-}
-
-/* ── Top bar ──────────────────────────────────────────────────────────────── */
-.forum-topbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 0.75rem 1rem;
-	padding: 0.6rem 0.85rem;
-	background: rgba(255,255,255,0.75);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgba(231,229,228,0.85);
-	border-radius: var(--radius) var(--radius) 0 0;
-	border-bottom: none;
-}
-
-.forum-cats {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.3rem;
-	align-items: center;
-}
-
-.forum-cat {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.4rem;
-	padding: 0.3rem 0.85rem;
-	font: inherit;
-	font-size: 0.82rem;
-	font-weight: 600;
-	color: var(--muted);
-	background: transparent;
-	border: 1.5px solid transparent;
-	border-radius: 999px;
-	cursor: pointer;
-	transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-.forum-cat:hover {
-	background: rgba(0,0,0,0.04);
-	color: var(--text);
-}
-.forum-cat--active {
-	background: var(--accent-soft);
-	color: #115e59;
-	border-color: #5eead4;
-}
-.forum-cat__dot {
-	display: inline-block;
-	width: 7px;
-	height: 7px;
-	border-radius: 50%;
-	flex-shrink: 0;
-}
-
-.forum-search-wrap {
-	position: relative;
-	flex: 0 0 auto;
-}
-.forum-search-icon {
-	position: absolute;
-	left: 0.65rem;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 13px;
-	height: 13px;
-	color: var(--muted);
-	pointer-events: none;
-}
-.forum-search-input {
-	width: 14rem;
-	padding: 0.4rem 0.75rem 0.4rem 2rem;
-	font: inherit;
-	font-size: 0.82rem;
-	border: 1.5px solid var(--border);
-	border-radius: 999px;
-	background: rgba(255,255,255,0.9);
-	color: var(--text);
-	outline: none;
-	transition: border-color 0.15s;
-	-webkit-appearance: none;
-}
-.forum-search-input:focus { border-color: #5eead4; }
-.forum-search-input::placeholder { color: #a8a29e; }
-
-/* ── Thread list ──────────────────────────────────────────────────────────── */
-.forum-threads {
-	display: flex;
-	flex-direction: column;
-	background: rgba(255,255,255,0.6);
-	border: 1px solid rgba(231,229,228,0.85);
-	border-bottom: none;
-}
-
-.fthread {
-	display: grid;
-	grid-template-columns: 2.75rem 1fr;
-	gap: 0 0.9rem;
-	padding: 1.1rem 1.1rem 1rem;
-	border-bottom: 1px solid rgba(231,229,228,0.7);
-	transition: background 0.15s;
-	cursor: default;
-}
-.fthread:last-of-type { border-bottom: none; }
-.fthread:hover { background: rgba(255,255,255,0.85); }
-
-.fthread__avatar {
-	width: 2.75rem;
-	height: 2.75rem;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 0.95rem;
-	font-weight: 700;
-	color: #fff;
-	flex-shrink: 0;
-	margin-top: 0.1rem;
-}
-.fthread__avatar--teal   { background: #0d9488; }
-.fthread__avatar--violet { background: #7c3aed; }
-.fthread__avatar--amber  { background: #d97706; }
-.fthread__avatar--rose   { background: #e11d48; }
-
-.fthread__body { min-width: 0; }
-
-.fthread__meta {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 0.4rem;
-	margin-bottom: 0.3rem;
-}
-.fthread__author {
-	font-size: 0.85rem;
-	font-weight: 700;
-	color: var(--text);
-}
-.fthread__time {
-	font-size: 0.78rem;
-	color: var(--muted);
-}
-.fthread__cat {
-	display: inline-flex;
-	align-items: center;
-	font-size: 0.7rem;
-	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	padding: 0.15rem 0.55rem;
-	border-radius: 999px;
-}
-.fthread__cat--teal   { background: #ccfbf1; color: #0f766e; }
-.fthread__cat--violet { background: #ede9fe; color: #6d28d9; }
-.fthread__cat--amber  { background: #fef3c7; color: #b45309; }
-
-.fthread__title {
-	font-size: 0.98rem;
-	font-weight: 650;
-	line-height: 1.35;
-	margin: 0 0 0.35rem;
-	color: var(--text);
-	letter-spacing: -0.01em;
-}
-.fthread__snippet {
-	font-size: 0.875rem;
-	color: var(--muted);
-	line-height: 1.5;
-	margin: 0 0 0.75rem;
-	/* clamp to 2 lines */
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-}
-
-.fthread__footer {
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-}
-.fthread__stat {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
-	font-size: 0.78rem;
-	color: var(--muted);
-	font-weight: 500;
-}
-.fthread__stat svg {
-	width: 13px;
-	height: 13px;
-	flex-shrink: 0;
-}
-.fthread__reply-btn {
-	font: inherit;
-	font-size: 0.78rem;
-	font-weight: 600;
-	color: var(--accent);
-	background: transparent;
-	border: none;
-	padding: 0;
-	cursor: not-allowed;
-	opacity: 0.5;
-}
-
-.forum-empty {
-	padding: 2.5rem 1.25rem;
-	text-align: center;
-	color: var(--muted);
-	font-size: 0.9rem;
-}
-
-/* ── Composer ─────────────────────────────────────────────────────────────── */
-.forum-composer {
-	padding: 0.85rem 1rem;
-	background: rgba(255,255,255,0.75);
-	backdrop-filter: blur(8px);
-	border: 1px solid rgba(231,229,228,0.85);
-	border-radius: 0 0 var(--radius) var(--radius);
-}
-.forum-composer__header {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-}
-.forum-composer__input {
-	flex: 1;
-	padding: 0.55rem 0.85rem;
-	font: inherit;
-	font-size: 0.9rem;
-	border: 1.5px solid var(--border);
-	border-radius: 999px;
-	background: rgba(250,250,249,0.8);
-	color: var(--text);
-	outline: none;
-	cursor: not-allowed;
-	opacity: 0.6;
-}
-.forum-composer__btn {
-	flex-shrink: 0;
-	opacity: 0.5;
-	cursor: not-allowed;
-	border-radius: 999px;
-	padding: 0.5rem 1.25rem;
-	font-size: 0.88rem;
-}
-
-@media (max-width: 560px) {
-	.forum-topbar {
+<style is:global>
+	/* ── Forum layout ─────────────────────────────────────────────────────────── */
+	.forum-layout {
+		display: flex;
 		flex-direction: column;
-		align-items: flex-start;
+		gap: 0;
 	}
-	.forum-search-input { width: 100%; }
-	.forum-search-wrap  { width: 100%; }
-	.fthread { grid-template-columns: 2.25rem 1fr; gap: 0 0.65rem; }
-}
+
+	.forum-topbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 0.75rem 1rem;
+		padding: 0.6rem 0.85rem;
+		background: rgba(255, 255, 255, 0.75);
+		backdrop-filter: blur(8px);
+		border: 1px solid rgba(231, 229, 228, 0.85);
+		border-radius: var(--radius) var(--radius) 0 0;
+		border-bottom: none;
+	}
+
+	.forum-cats {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3rem;
+		align-items: center;
+	}
+
+	.forum-cat {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.3rem 0.85rem;
+		font: inherit;
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: var(--muted);
+		background: transparent;
+		border: 1.5px solid transparent;
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			background 0.15s,
+			color 0.15s,
+			border-color 0.15s;
+	}
+	.forum-cat:hover {
+		background: rgba(0, 0, 0, 0.04);
+		color: var(--text);
+	}
+	.forum-cat--active {
+		background: var(--accent-soft);
+		color: #115e59;
+		border-color: #5eead4;
+	}
+	.forum-cat__dot {
+		display: inline-block;
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.forum-search-wrap {
+		position: relative;
+		flex: 0 0 auto;
+	}
+	.forum-search-icon {
+		position: absolute;
+		left: 0.65rem;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 13px;
+		height: 13px;
+		color: var(--muted);
+		pointer-events: none;
+	}
+	.forum-search-input {
+		width: 14rem;
+		padding: 0.4rem 0.75rem 0.4rem 2rem;
+		font: inherit;
+		font-size: 0.82rem;
+		border: 1.5px solid var(--border);
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.9);
+		color: var(--text);
+		outline: none;
+		transition: border-color 0.15s;
+		-webkit-appearance: none;
+	}
+	.forum-search-input:focus {
+		border-color: #5eead4;
+	}
+	.forum-search-input::placeholder {
+		color: #a8a29e;
+	}
+
+	.forum-threads {
+		display: flex;
+		flex-direction: column;
+		background: rgba(255, 255, 255, 0.6);
+		border: 1px solid rgba(231, 229, 228, 0.85);
+		border-bottom: none;
+		min-height: 6rem;
+	}
+
+	.forum-loading {
+		padding: 1.5rem;
+		text-align: center;
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin: 0;
+	}
+
+	.fthread {
+		display: grid;
+		grid-template-columns: 2.75rem 1fr;
+		gap: 0 0.9rem;
+		padding: 1.1rem 1.1rem 1rem;
+		border-bottom: 1px solid rgba(231, 229, 228, 0.7);
+		transition: background 0.15s;
+	}
+	.fthread:last-of-type {
+		border-bottom: none;
+	}
+	.fthread:hover {
+		background: rgba(255, 255, 255, 0.85);
+	}
+
+	.fthread__avatar {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: #fff;
+		flex-shrink: 0;
+		margin-top: 0.1rem;
+	}
+	.fthread__avatar--teal {
+		background: #0d9488;
+	}
+	.fthread__avatar--violet {
+		background: #7c3aed;
+	}
+	.fthread__avatar--amber {
+		background: #d97706;
+	}
+	.fthread__avatar--rose {
+		background: #e11d48;
+	}
+
+	.fthread__body {
+		min-width: 0;
+	}
+
+	.fthread__meta {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 0.3rem;
+	}
+	.fthread__author {
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--text);
+	}
+	.fthread__time {
+		font-size: 0.78rem;
+		color: var(--muted);
+	}
+	.fthread__cat {
+		display: inline-flex;
+		align-items: center;
+		font-size: 0.7rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		padding: 0.15rem 0.55rem;
+		border-radius: 999px;
+	}
+	.fthread__cat--teal {
+		background: #ccfbf1;
+		color: #0f766e;
+	}
+	.fthread__cat--violet {
+		background: #ede9fe;
+		color: #6d28d9;
+	}
+	.fthread__cat--amber {
+		background: #fef3c7;
+		color: #b45309;
+	}
+
+	.fthread__title {
+		font-size: 0.98rem;
+		font-weight: 650;
+		line-height: 1.35;
+		margin: 0 0 0.35rem;
+		color: var(--text);
+		letter-spacing: -0.01em;
+	}
+	.fthread__snippet {
+		font-size: 0.875rem;
+		color: var(--muted);
+		line-height: 1.5;
+		margin: 0 0 0.75rem;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.fthread__footer {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.fthread__stat {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.78rem;
+		color: var(--muted);
+		font-weight: 500;
+	}
+	.fthread__stat svg {
+		width: 13px;
+		height: 13px;
+		flex-shrink: 0;
+	}
+	.fthread__reply-btn {
+		font: inherit;
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: var(--accent);
+		background: transparent;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.forum-empty {
+		padding: 2.5rem 1.25rem;
+		text-align: center;
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin: 0;
+	}
+
+	.forum-composer {
+		padding: 0.85rem 1rem;
+		background: rgba(255, 255, 255, 0.75);
+		backdrop-filter: blur(8px);
+		border: 1px solid rgba(231, 229, 228, 0.85);
+		border-radius: 0 0 var(--radius) var(--radius);
+	}
+	.forum-composer__label {
+		margin: 0 0 0.5rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+	}
+	.forum-composer__header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.forum-composer__input {
+		flex: 1;
+		padding: 0.55rem 0.85rem;
+		font: inherit;
+		font-size: 0.9rem;
+		border: 1.5px solid var(--border);
+		border-radius: 999px;
+		background: rgba(250, 250, 249, 0.8);
+		color: var(--text);
+		outline: none;
+	}
+	.forum-composer__input:focus {
+		border-color: #5eead4;
+	}
+	.forum-composer__btn {
+		flex-shrink: 0;
+		border-radius: 999px;
+		padding: 0.5rem 1.25rem;
+		font-size: 0.88rem;
+		align-self: flex-start;
+	}
+
+	@media (max-width: 560px) {
+		.forum-topbar {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.forum-search-input {
+			width: 100%;
+		}
+		.forum-search-wrap {
+			width: 100%;
+		}
+		.fthread {
+			grid-template-columns: 2.25rem 1fr;
+			gap: 0 0.65rem;
+		}
+	}
 </style>
 
 <script>
-	const cats     = document.querySelectorAll<HTMLButtonElement>('.forum-cat');
-	const threads  = document.querySelectorAll<HTMLElement>('.fthread');
-	const searchEl = document.getElementById('forum-search') as HTMLInputElement | null;
-	const emptyEl  = document.getElementById('forum-empty') as HTMLElement | null;
+	type Post = {
+		id: string;
+		username: string;
+		title: string;
+		body: string;
+		category: string;
+		createdAt: string;
+	};
 
+	const threadsEl = document.getElementById('forum-threads')!;
+	const loadingEl = document.getElementById('forum-loading')!;
+	const emptyEl = document.getElementById('forum-empty')!;
+	const filterEmptyEl = document.getElementById('forum-filter-empty')!;
+	const searchEl = document.getElementById('forum-search') as HTMLInputElement;
+	const cats = document.querySelectorAll<HTMLButtonElement>('.forum-cat');
+	const app = document.getElementById('forum-app')!;
+	const loggedIn = app.dataset['loggedIn'] === '1';
+
+	let posts: Post[] = [];
 	let activeCat = 'all';
 
-	function applyFilters(): void {
-		const q = searchEl?.value.trim().toLowerCase() ?? '';
-		let visible = 0;
-		threads.forEach(t => {
-			const catMatch = activeCat === 'all' || t.dataset['cat'] === activeCat;
-			const text = t.textContent?.toLowerCase() ?? '';
-			const searchMatch = !q || text.includes(q);
-			const show = catMatch && searchMatch;
-			t.hidden = !show;
-			if (show) visible++;
-		});
-		if (emptyEl) emptyEl.hidden = visible > 0;
+	function esc(s: string): string {
+		const d = document.createElement('div');
+		d.textContent = s;
+		return d.innerHTML;
 	}
 
-	cats.forEach(btn => {
+	function relTime(iso: string): string {
+		const t = Date.now() - new Date(iso).getTime();
+		const sec = Math.floor(t / 1000);
+		if (sec < 60) return 'just now';
+		if (sec < 3600) return `${Math.floor(sec / 60)}m ago`;
+		if (sec < 86400) return `${Math.floor(sec / 3600)}h ago`;
+		if (sec < 604800) return `${Math.floor(sec / 86400)}d ago`;
+		return new Date(iso).toLocaleDateString();
+	}
+
+	function catMeta(cat: string): { label: string; av: string; pill: string } {
+		if (cat === 'arvr') return { label: 'AR / VR', av: 'fthread__avatar--teal', pill: 'fthread__cat--teal' };
+		if (cat === 'project') return { label: 'Smart Campus', av: 'fthread__avatar--violet', pill: 'fthread__cat--violet' };
+		return { label: 'General', av: 'fthread__avatar--amber', pill: 'fthread__cat--amber' };
+	}
+
+	function renderThreads(): void {
+		const q = searchEl?.value.trim().toLowerCase() ?? '';
+		loadingEl.remove();
+		threadsEl.querySelectorAll('.fthread').forEach((n) => n.remove());
+
+		const filtered = posts.filter((p) => {
+			const catOk = activeCat === 'all' || p.category === activeCat;
+			const hay = `${p.title} ${p.body} ${p.username}`.toLowerCase();
+			const qOk = !q || hay.includes(q);
+			return catOk && qOk;
+		});
+
+		emptyEl.hidden = posts.length > 0;
+		filterEmptyEl.hidden = filtered.length > 0 || posts.length === 0;
+
+		const svg = `<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2C4.134 2 1 4.686 1 8c0 1.385.511 2.659 1.363 3.671L1.5 14l2.653-.863A7.06 7.06 0 0 0 8 14c3.866 0 7-2.686 7-6s-3.134-6-7-6Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+
+		for (const p of filtered) {
+			const m = catMeta(p.category);
+			const letter = p.username.slice(0, 1).toUpperCase();
+			const art = document.createElement('article');
+			art.className = 'fthread';
+			art.dataset['cat'] = p.category;
+			art.innerHTML = `
+				<div class="fthread__avatar ${m.av}" aria-hidden="true">${esc(letter)}</div>
+				<div class="fthread__body">
+					<div class="fthread__meta">
+						<span class="fthread__author">${esc(p.username)}</span>
+						<span class="fthread__cat ${m.pill}">${esc(m.label)}</span>
+						<span class="fthread__time">${esc(relTime(p.createdAt))}</span>
+					</div>
+					<h2 class="fthread__title">${esc(p.title)}</h2>
+					<p class="fthread__snippet">${esc(p.body)}</p>
+					<div class="fthread__footer">
+						<span class="fthread__stat">${svg} Discussion</span>
+						<button type="button" class="fthread__reply-btn" disabled title="Replies coming later">Reply</button>
+					</div>
+				</div>
+			`;
+			threadsEl.insertBefore(art, filterEmptyEl);
+		}
+	}
+
+	async function loadPosts(): Promise<void> {
+		threadsEl.setAttribute('aria-busy', 'true');
+		try {
+			const res = await fetch('/api/posts', { credentials: 'include' });
+			const data = (await res.json()) as { posts?: Post[] };
+			posts = data.posts ?? [];
+		} catch {
+			posts = [];
+		}
+		threadsEl.setAttribute('aria-busy', 'false');
+		renderThreads();
+	}
+
+	cats.forEach((btn) => {
 		btn.addEventListener('click', () => {
-			cats.forEach(b => b.classList.remove('forum-cat--active'));
+			cats.forEach((b) => b.classList.remove('forum-cat--active'));
 			btn.classList.add('forum-cat--active');
 			activeCat = btn.dataset['cat'] ?? 'all';
-			applyFilters();
+			renderThreads();
 		});
 	});
 
-	searchEl?.addEventListener('input', applyFilters);
+	searchEl?.addEventListener('input', () => renderThreads());
+
+	if (loggedIn) {
+		const postBtn = document.getElementById('forum-post-btn');
+		const titleIn = document.getElementById('forum-new-title') as HTMLInputElement;
+		const bodyIn = document.getElementById('forum-new-body') as HTMLTextAreaElement;
+		const catIn = document.getElementById('forum-new-cat') as HTMLSelectElement;
+		const errEl = document.getElementById('forum-post-err') as HTMLElement;
+
+		postBtn?.addEventListener('click', async () => {
+			errEl.hidden = true;
+			const title = titleIn.value.trim();
+			const body = bodyIn.value.trim();
+			if (title.length < 3) {
+				errEl.textContent = 'Title must be at least 3 characters.';
+				errEl.hidden = false;
+				return;
+			}
+			if (!body) {
+				errEl.textContent = 'Please write something in the body.';
+				errEl.hidden = false;
+				return;
+			}
+			postBtn.setAttribute('disabled', 'true');
+			try {
+				const res = await fetch('/api/posts', {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ title, body, category: catIn.value }),
+				});
+				const data = (await res.json()) as { error?: string };
+				if (!res.ok) {
+					errEl.textContent = data.error ?? 'Could not post.';
+					errEl.hidden = false;
+					return;
+				}
+				titleIn.value = '';
+				bodyIn.value = '';
+				await loadPosts();
+			} catch {
+				errEl.textContent = 'Network error.';
+				errEl.hidden = false;
+			} finally {
+				postBtn.removeAttribute('disabled');
+			}
+		});
+	}
+
+	void loadPosts();
 </script>
